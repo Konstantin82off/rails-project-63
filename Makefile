@@ -1,10 +1,10 @@
 .PHONY: install lint test
 
 install:
- bundle install
+	bundle install
 
 lint:
- bundle exec rubocop
+	bundle exec rubocop
 
 test:
- bundle exec rake test
+	bundle exec rake test
