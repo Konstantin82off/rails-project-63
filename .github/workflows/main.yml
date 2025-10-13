@@ -1,29 +1,40 @@
-name: Ruby
+name: CI
 
 on:
   push:
     branches:
       - master
-
+      - main
   pull_request:
+    branches:
+      - master
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Ruby ${{ matrix.ruby }}
     strategy:
       matrix:
         ruby:
           - '3.2.2'
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
-      - name: Run the default task
-        run: bundle exec rake
+
+      - name: Install dependencies
+        run: bundle install --jobs 4 --retry 3
+
+      - name: Run rubocop
+        run: make lint
+
+      - name: Run tests
+        run: make test
