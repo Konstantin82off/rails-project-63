@@ -1,3 +1,4 @@
+# test/test_hexlet_code.rb
 # frozen_string_literal: true
 
 require "test_helper"
@@ -47,6 +48,16 @@ class TestHexletCode < Minitest::Test
     end
 
     expected = ExpectedOutputs::FORM_WITH_SELECT_INPUT
+    assert_equal expected, result
+  end
+
+  def test_form_for_with_default_input
+    user = Struct.new(:name).new("rob")
+    result = HexletCode.form_for(user, url: "/users") do |f|
+      f.input :name
+    end
+
+    expected = '<form action="/users" method="post"><input name="name" type="text" value="rob"></form>'
     assert_equal expected, result
   end
 

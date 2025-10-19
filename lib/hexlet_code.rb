@@ -1,23 +1,22 @@
+# lib/hexlet_code/hexlet_code.rb
 # frozen_string_literal: true
 
+require_relative "hexlet_code/tag"
+require_relative "hexlet_code/form_builder"
 require_relative "hexlet_code/version"
 
-# HexletCode — набор хелперов для генерации HTML‑форм и тегов.
 module HexletCode
-  class Error < StandardError; end
+  def self.form_for(entity, url: nil, **attrs)
+    builder = FormBuilder.new(entity)
+    yield builder if block_given?
 
-  autoload :Tag, "hexlet_code/tag"
-  autoload :FormBuilder, "hexlet_code/form_builder"  # Добавлено
+    form_attrs = {}
+    form_attrs[:action] = url || "#"
+    form_attrs[:method] = "post"
+    form_attrs.merge!(attrs)
 
-  def self.form_for(entity, url: nil, **attrs)  # Изменено: добавлен параметр entity
-    action = url || "#"
-    method_value = attrs.delete(:method) || "post"
-
-    builder = FormBuilder.new(entity, url: action, **attrs)  # Добавлено
-    form_content = yield(builder) if block_given?  # Добавлено
-
-    Tag.build("form", { action: action, method: method_value }.merge(attrs)) do
-      form_content  # Добавлено
+    Tag.build("form", form_attrs) do
+      builder.to_s
     end
   end
 end

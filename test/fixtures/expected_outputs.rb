@@ -1,3 +1,4 @@
+# test/fixtures/expected_outputs.rb
 module ExpectedOutputs
   FORM_WITH_INPUT = '<form action="/users" method="post"><input name="name" type="text" value="rob"><textarea name="job">hexlet</textarea></form>'
 

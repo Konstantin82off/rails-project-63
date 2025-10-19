@@ -1,3 +1,4 @@
+# lib/hexlet_code/form_builder.rb
 # frozen_string_literal: true
 
 module HexletCode
@@ -9,9 +10,9 @@ module HexletCode
 
     def input(name, **options)
       value = @entity.public_send(name)
-      as = options.delete(:as)
+      as = options.delete(:as) # Убрали значение по умолчанию
 
-      case as&.to_sym
+      case as&.to_sym # Используем safe navigation operator
       when :text
         attrs = { name: name }.merge(options)
         @fields << Tag.build("textarea", attrs) { value.to_s }
@@ -26,6 +27,14 @@ module HexletCode
       when :checkbox
         attrs = { name: name, type: "checkbox", value: value }
         attrs[:checked] = true if value
+        attrs.merge!(options)
+        @fields << Tag.build("input", attrs)
+      when :radio
+        attrs = { name: name, type: "radio", value: value }
+        attrs.merge!(options)
+        @fields << Tag.build("input", attrs)
+      when :password
+        attrs = { name: name, type: "password" }
         attrs.merge!(options)
         @fields << Tag.build("input", attrs)
       else # default: text input
