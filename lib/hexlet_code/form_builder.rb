@@ -10,11 +10,12 @@ module HexletCode
 
     def input(name, **options)
       value = @entity.public_send(name)
-      as = options.delete(:as) # Убрали значение по умолчанию
+      as = options.delete(:as)
 
-      case as&.to_sym # Используем safe navigation operator
+      case as&.to_sym
       when :text
-        attrs = { name: name }.merge(options)
+        # Добавляем дефолтные значения для textarea
+        attrs = { name: name, cols: 20, rows: 40 }.merge(options)
         @fields << Tag.build("textarea", attrs) { value.to_s }
       when :select
         choices = options.delete(:choices) || []
