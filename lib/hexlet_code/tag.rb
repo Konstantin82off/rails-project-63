@@ -1,38 +1,58 @@
+# lib/hexlet_code/tag.rb
 # frozen_string_literal: true
 
-module HexletCode
-  class Tag
-    SINGLE_TAGS = %w[input br hr img].freeze
+# Служебный класс для создания HTML-тегов с атрибутами и содержимым.
+# Поддерживает отдельные теги (input, br, hr, img) и обычные теги с необязательным содержимым блока.
+class Tag
+  SINGLE_TAGS = %w[input br hr img].freeze
 
-    def self.build(name, options = {}, &block)
-      attributes = if name == "input"
-        # Сортировка атрибутов для input: name, type, value, остальные по алфавиту
-        order = %w[name type value]
-        ordered_attrs = order.filter_map do |k|
-          v = options[k.to_sym] || options[k]
-          [k, v] if options.key?(k.to_sym) || options.key?(k)
-        end
-        rest = options.reject { |k, _| order.include?(k.to_s) }
-        attrs_arr = ordered_attrs + rest.sort_by { |k, _| k.to_s }
-        attrs_arr.map { |key, value| attr_to_s(key, value) }.compact.join(" ")
-      else
-        options.map { |key, value| attr_to_s(key, value) }.compact.join(" ")
-      end
+  def self.build(name, options = {})
+    tag_name = name.to_s
+    attrs_str = build_attributes(tag_name, options)
 
-      attrs_str = attributes.empty? ? "" : " #{attributes}"
-
-      if block_given?
-        "<#{name}#{attrs_str}>#{yield}</#{name}>"
-      elsif SINGLE_TAGS.include?(name)
-        "<#{name}#{attrs_str}>"
-      else
-        "<#{name}#{attrs_str}></#{name}>"
-      end
+    if block_given? && !SINGLE_TAGS.include?(tag_name)
+      "<#{tag_name}#{attrs_str}>#{yield.strip}</#{tag_name}>".strip
+    elsif SINGLE_TAGS.include?(tag_name)
+      "<#{tag_name}#{attrs_str}>".strip
+    else
+      "<#{tag_name}#{attrs_str}></#{tag_name}>".strip
     end
+  end
 
-    def self.attr_to_s(key, value)
-      return nil if value.nil? || value == false
-      value == true ? key.to_s : %(#{key}="#{value}")
+  def self.build_attributes(tag_name, options)
+    attrs =
+      if tag_name == "input"
+        ordered_input_attributes(options)
+      else
+        regular_attributes(options)
+      end
+    attrs.empty? ? "" : " #{attrs.join(" ")}"
+  end
+
+  def self.ordered_input_attributes(options)
+    order = %w[name type value]
+    ordered = order.filter_map do |key|
+      fetch_option(options, key)
     end
+    rest = options.reject { |k, _| order.include?(k.to_s) }
+                  .sort_by { |k, _| k.to_s }
+                  .map { |k, v| attr_to_s(k, v) }
+                  .compact
+    (ordered + rest)
+  end
+
+  def self.fetch_option(options, key)
+    v = options[key.to_sym] || options[key]
+    attr_to_s(key, v) if options.key?(key.to_sym) || options.key?(key)
+  end
+
+  def self.regular_attributes(options)
+    options.map { |k, v| attr_to_s(k, v) }.compact
+  end
+
+  def self.attr_to_s(key, value)
+    return nil if value.nil? || value == false
+
+    value == true ? key.to_s : %(#{key}="#{value}")
   end
 end
