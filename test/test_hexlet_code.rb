@@ -3,6 +3,7 @@
 
 require "test_helper"
 require_relative "fixtures/expected_outputs"
+require_relative "../lib/hexlet_code"
 
 class TestHexletCode < Minitest::Test
   def normalize_html(html)
@@ -83,6 +84,28 @@ class TestHexletCode < Minitest::Test
 
     expected = ExpectedOutputs::FORM_WITH_CUSTOM_TEXTAREA
     assert_equal normalize_html(expected), normalize_html(result)
+  end
+
+  def test_form_with_labels_and_submit
+    user = Struct.new(:name, :job).new("rob", "hexlet")
+    result = HexletCode.form_for(user, url: "/users") do |f|
+      f.input :name
+      f.input :job
+      f.submit
+    end
+
+    assert_equal normalize_html(ExpectedOutputs::FORM_WITH_LABELS_AND_SUBMIT), normalize_html(result)
+  end
+
+  def test_custom_submit_text
+    user = Struct.new(:name, :job).new("rob", "hexlet")
+    result = HexletCode.form_for(user, url: "/users") do |f|
+      f.input :name
+      f.input :job
+      f.submit "Update"
+    end
+
+    assert_equal normalize_html(ExpectedOutputs::FORM_WITH_CUSTOM_SUBMIT), normalize_html(result)
   end
 
   def test_missing_field_error
