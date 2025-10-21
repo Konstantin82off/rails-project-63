@@ -1,4 +1,76 @@
+# sig/hexlet_code.rbs
+
+# Основной модуль библиотеки
 module HexletCode
-  VERSION: String
-  # See the writing guide of rbs: https://github.com/ruby/rbs#guides
+  # Основной класс для построения форм
+  class FormBuilder
+    # Конструктор FormBuilder
+    # entity - объект, к которому привязывается форма
+    def initialize(entity: Object): void
+
+    # Основной метод для создания полей ввода
+    # name - имя поля (Symbol)
+    # options - дополнительные опции (Hash)
+    #   as - тип поля (Symbol)
+    #   value - значение по умолчанию (Optional[String])
+    #   class - CSS класс (Optional[String])
+    #   placeholder - текст-заполнитель (Optional[String])
+    def input(name: Symbol, **options: Hash): void
+
+    # Метод создания кнопки отправки формы
+    # text - текст на кнопке (String)
+    def submit(text: String = "Save"): void
+
+    # Преобразование формы в строку HTML
+    def to_s(): String
+
+    # Приватные методы
+
+    # Создание текстового поля
+    private def add_textarea(
+      name: Symbol, 
+      value: String, 
+      options: Hash
+    ): void
+
+    # Создание выпадающего списка
+    private def add_select(
+      name: Symbol, 
+      value: String, 
+      options: Hash
+    ): void
+
+    # Создание чекбокса
+    private def add_checkbox(
+      name: Symbol, 
+      value: String, 
+      options: Hash
+    ): void
+
+    # Создание поля пароля
+    private def add_password(
+      name: Symbol, 
+      value: String, 
+      options: Hash
+    ): void
+
+    # Создание обычного текстового поля
+    private def add_text_input(
+      name: Symbol, 
+      value: String, 
+      options: Hash
+    ): void
+
+    # Создание тега label
+    private def label(name: Symbol): void
+  end
+
+  # Вспомогательный класс для построения HTML-тегов
+  class Tag
+    # Создание HTML-тега
+    # tag_name - имя тега (String)
+    # attrs - атрибуты тега (Hash)
+    # block - содержимое тега (Optional[String])
+    def self.build(tag_name: String, attrs: Hash, &block: -> String): String
+  end
 end
