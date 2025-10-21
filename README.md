@@ -7,10 +7,12 @@
 
 HexletCode is a Ruby library for declarative HTML form generation. It builds forms bound to your Ruby objects, auto-fills values, and supports passing arbitrary HTML attributes.
 
+Key Features:
 - Object binding with automatic value population
 - Field types: input, textarea, checkbox, select, password
 - Custom HTML attributes (class, placeholder, id, etc.)
-- submit button with customizable text and attributes
+- **Labels** for each input field
+- **Submit button** with customizable text and attributes
 
 ## Requirements
 
@@ -37,6 +39,20 @@ gem install pkg/hexlet_code-*.gem
 
 ## Usage
 
+### Form Builder Methods
+#### Labels
+Each input field automatically generates a corresponding label:
+```ruby
+f.input :name # generates both <label> and <input>
+```
+
+#### Submit Button
+Customizable submit button with optional text and attributes:
+```ruby
+f.submit # default "Save" button
+f.submit 'Wow' # custom button text
+f.submit 'Save', class: 'btn btn-primary' # with additional attributes
+```
 Basic example:
 ```ruby
 User = Struct.new(:name, :job, :gender, :password, keyword_init: true)
@@ -60,25 +76,28 @@ end
 ```
 Supported field types:
 ```ruby
-* Text input
+# Text input
 f.input :name
 
-* Textarea
+# Textarea
 f.input :job, as: :text
 
-* Checkbox
+# Checkbox
 f.input :gender, as: :checkbox
 
-* Select
+# Select
 f.input :gender, as: :select, choices: %w[m f]
 
-* Password
+# Password
 f.input :password, as: :password
 ```
-Example HTML output:
+
+Example HTML output with labels:
 ```html
 <form action="/users" method="post">
+  <label for="name">Name</label>
   <input name="name" type="text" class="user-input" placeholder="Enter your name">
+  <label for="job">Job</label>
   <textarea name="job">hexlet</textarea>
   <input type="submit" value="Save" class="btn btn-primary">
 </form>
