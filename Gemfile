@@ -3,17 +3,20 @@
 
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in hexlet_code.gemspec
+# Подгружаем runtime-зависимости из hexlet_code.gemspec
 gemspec
 
+# Для удобного запуска в консоли
 gem "irb"
 
-group :development do
-  gem "rubocop", "~> 1.21"
+group :development, :test do
+  # таски (rake, binstubs и т.п.)
   gem "rake", "~> 13.0"
-end
 
-group :test do
-  gem "rspec", "~> 3.13"
+  # тестовые фреймворки
   gem "minitest", "~> 5.16"
+  gem "rspec",   "~> 3.13"
+
+  # статический анализ и автокоррекция кода
+  gem "rubocop", "~> 1.21", require: false
 end

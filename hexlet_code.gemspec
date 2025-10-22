@@ -19,15 +19,15 @@ Gem::Specification.new do |spec|
 
   # Метаданные для RubyGems
   spec.metadata["homepage_uri"]     = spec.homepage
-  spec.metadata["source_code_uri"]  = "https://github.com/Konstantin82off/rails-project-63"
-  spec.metadata["changelog_uri"]    = "https://github.com/Konstantin82off/rails-project-63/blob/main/CHANGELOG.md"
+  spec.metadata["source_code_uri"]  = spec.homepage
+  spec.metadata["changelog_uri"]    = "#{spec.homepage}/blob/main/CHANGELOG.md"
   spec.metadata["rubygems_mfa_required"] = "true"
 
   # Файлы, попадающие в гем
-  dir = File.expand_path(__dir__)
-  gemspec_file = File.basename(__FILE__)
+  dir           = File.expand_path(__dir__)
+  gemspec_file  = File.basename(__FILE__)
   spec.files = IO.popen(%w[git ls-files -z], chdir: dir, err: IO::NULL) do |ls|
-    ls.readlines("x0", chomp: true).reject do |f|
+    ls.read.split("x0").reject do |f|
       f == gemspec_file ||
         f.start_with?(
           "bin/", "Gemfile", ".gitignore",
@@ -40,12 +40,6 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  # Runtime-зависимости (при необходимости раскомментируй и добавь)
+  # Runtime-зависимости (раскомментируйте и добавьте при необходимости)
   # spec.add_dependency "rails", "~> 6.1"
-
-  # Development-зависимости
-  spec.add_development_dependency "rake",    "~> 13.0"
-  spec.add_development_dependency "rspec",   "~> 3.13"
-  spec.add_development_dependency "minitest","~> 5.16"
-  spec.add_development_dependency "rubocop", "~> 1.21"
 end
