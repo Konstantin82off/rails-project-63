@@ -30,7 +30,7 @@ module HexletCode
         dispatch_input(as, name, value, options)
       end
 
-      # Добавляем label и поле последовательно
+      # Теперь добавляем label перед полем
       @fields << label(name)
       @fields << @last_input # Используем сохраненный тег input
       nil
