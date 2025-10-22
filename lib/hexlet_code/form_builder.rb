@@ -21,7 +21,14 @@ module HexletCode
     def input(name, **options)
       value = @entity.public_send(name)
       as = options.delete(:as) || :text
-      dispatch_input(as, name, value, options)
+
+      # Явно проверяем тип поля
+      if as == :textarea
+        # Для textarea используем специальный метод
+        add_textarea(name, value, options)
+      else
+        dispatch_input(as, name, value, options)
+      end
 
       # Добавляем label и поле последовательно
       @fields << label(name)
@@ -49,6 +56,7 @@ module HexletCode
     end
 
     def add_textarea(name, value, options)
+      # Устанавливаем значения по умолчанию
       default_options = { cols: 20, rows: 40 }
       attrs = { name: name }.merge(default_options).merge(options)
       @last_input = Tag.build("textarea", attrs) { value.to_s.strip }
