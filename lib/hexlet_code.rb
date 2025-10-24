@@ -6,9 +6,9 @@
 # для работы с формами и их элементами.
 module HexletCode
   # Требует необходимые компоненты
-  require_relative "hexlet_code/tag"
-  require_relative "hexlet_code/form_builder"
-  require_relative "hexlet_code/version"
+  require_relative 'hexlet_code/tag'
+  require_relative 'hexlet_code/form_builder'
+  require_relative 'hexlet_code/version'
 
   # Создает форму с заданными параметрами и блоком
   #
@@ -24,11 +24,11 @@ module HexletCode
     yield builder if block_given?
 
     form_attrs = {}
-    form_attrs[:action] = url || "#"
-    form_attrs[:method] = "post"
+    form_attrs[:action] = url || '#'
+    form_attrs[:method] = 'post'
     form_attrs.merge!(attrs)
 
-    Tag.build("form", form_attrs) do
+    Tag.build('form', form_attrs) do
       builder.to_s
     end
   end
