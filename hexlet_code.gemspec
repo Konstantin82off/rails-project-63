@@ -1,23 +1,23 @@
 # frozen_string_literal: true
 
-require_relative "lib/hexlet_code/version"
+require_relative 'lib/hexlet_code/version'
 
 Gem::Specification.new do |spec|
-  spec.name = "hexlet_code"
+  spec.name = 'hexlet_code'
   spec.version = HexletCode::VERSION
-  spec.authors = ["Konstantin Udodov"]
-  spec.email = ["k.udodov@internet.ru"]
+  spec.authors = ['Konstantin Udodov']
+  spec.email = ['k.udodov@internet.ru']
 
-  spec.summary = "DSL to build HTML forms"
-  spec.description = "Hexlet Code — tiny form generator to reduce template boilerplate and handle errors."
-  spec.homepage = "https://github.com/Konstantin82off/rails-project-63"
-  spec.required_ruby_version = ">= 3.2.2"
+  spec.summary = 'DSL to build HTML forms'
+  spec.description = 'Hexlet Code — tiny form generator to reduce template boilerplate and handle errors.'
+  spec.homepage = 'https://github.com/Konstantin82off/rails-project-63'
+  spec.required_ruby_version = '>= 3.2.2'
   # spec.license = "MIT"
 
   # spec.metadata["allowed_push_host"] = "TODO: Set to your gem server 'https://example.com'"
-  spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/Konstantin82off/rails-project-63"
-  spec.metadata["rubygems_mfa_required"] = "true"
+  spec.metadata['homepage_uri'] = spec.homepage
+  spec.metadata['source_code_uri'] = 'https://github.com/Konstantin82off/rails-project-63'
+  spec.metadata['rubygems_mfa_required'] = 'true'
   # spec.metadata["changelog_uri"] = "https://github.com/Konstantin82off/rails-project-63/blob/main/CHANGELOG.md"
 
   # Specify which files should be added to the gem when it is released.
@@ -29,9 +29,9 @@ Gem::Specification.new do |spec|
         f.start_with?(*%w[bin/ Gemfile .gitignore test/ .github/ .rubocop.yml])
     end
   end
-  spec.bindir = "exe"
+  spec.bindir = 'exe'
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
-  spec.require_paths = ["lib"]
+  spec.require_paths = ['lib']
 
   # Uncomment to register a new dependency of your gem
   # spec.add_dependency "example-gem", "~> 1.0"

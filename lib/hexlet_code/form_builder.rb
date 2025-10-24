@@ -30,8 +30,8 @@ module HexletCode
       nil
     end
 
-    def submit(text = "Save")
-      @fields << Tag.build("input", type: "submit", value: text)
+    def submit(text = 'Save')
+      @fields << Tag.build('input', type: 'submit', value: text)
     end
 
     def to_s
@@ -41,7 +41,7 @@ module HexletCode
     private
 
     def label(name)
-      Tag.build("label", for: name.to_s) { name.to_s.capitalize }
+      Tag.build('label', for: name.to_s) { name.to_s.capitalize }
     end
 
     def dispatch_input(as, name, value, options)
@@ -54,7 +54,7 @@ module HexletCode
       attrs = { name: name.to_s }
               .merge(default_options)
               .merge(options)
-      @last_input = Tag.build("textarea", attrs) { value.to_s }
+      @last_input = Tag.build('textarea', attrs) { value.to_s }
     end
 
     def add_select(name, value, options)
@@ -64,32 +64,32 @@ module HexletCode
 
       options_html = choices.map do |choice|
         sel_attr = choice == selected ? { selected: true } : {}
-        Tag.build("option", { value: choice }.merge(sel_attr)) { choice }
+        Tag.build('option', { value: choice }.merge(sel_attr)) { choice }
       end.join("\n")
 
-      @last_input = Tag.build("select", attrs) { options_html }
+      @last_input = Tag.build('select', attrs) { options_html }
     end
 
     def add_checkbox(name, value, options)
       checked = options.delete(:checked) || value
-      attrs   = { name: name.to_s, type: "checkbox", value: value }
+      attrs   = { name: name.to_s, type: 'checkbox', value: value }
       attrs[:checked] = true if checked
       attrs.merge!(options)
 
-      @last_input = Tag.build("input", attrs)
+      @last_input = Tag.build('input', attrs)
     end
 
     def add_password(name, _value, options)
-      attrs = { name: name.to_s, type: "password" }.merge(options)
-      @last_input = Tag.build("input", attrs)
+      attrs = { name: name.to_s, type: 'password' }.merge(options)
+      @last_input = Tag.build('input', attrs)
     end
 
     def add_text_input(name, value, options)
-      attrs = { name: name.to_s, type: "text" }
+      attrs = { name: name.to_s, type: 'text' }
       attrs[:value] = value.to_s unless value.nil?
       attrs.merge!(options)
 
-      @last_input = Tag.build("input", attrs)
+      @last_input = Tag.build('input', attrs)
     end
   end
 end

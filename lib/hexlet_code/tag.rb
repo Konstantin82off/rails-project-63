@@ -21,12 +21,12 @@ class Tag
 
   def self.build_attributes(tag_name, options)
     attrs =
-      if tag_name == "input"
+      if tag_name == 'input'
         ordered_input_attributes(options)
       else
         regular_attributes(options)
       end
-    attrs.empty? ? "" : " #{attrs.join(" ")}"
+    attrs.empty? ? '' : " #{attrs.join(' ')}"
   end
 
   def self.ordered_input_attributes(options)
