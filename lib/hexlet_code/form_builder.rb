@@ -5,13 +5,15 @@ module HexletCode
   # FormBuilder — строитель HTML-форм для объекта-модели.
   class FormBuilder
     INPUT_BUILDERS = {
-      input: :add_text_input, # default
+      input: :add_text_input,
       select: :add_select,
       checkbox: :add_checkbox,
       password: :add_password,
-      text: :add_textarea, # as: :text → <textarea>
-      textarea: :add_textarea # на всякий случай
+      text: :add_textarea,
+      textarea: :add_textarea
     }.freeze
+
+    attr_reader :fields
 
     def initialize(entity)
       @entity = entity
@@ -20,14 +22,10 @@ module HexletCode
 
     def input(name, **options)
       value = @entity.public_send(name)
-      # если as не указан — :input, иначе — тот ключ, который передали
-      as = options.delete(:as)&.to_sym || :input
+      as = (options.delete(:as)&.to_sym || :input).to_sym
 
       @fields << label(name)
-      dispatch_input(as, name, value, options)
-      @fields << @last_input
-
-      nil
+      @fields << dispatch_input(as, name, value, options)
     end
 
     def submit(text = 'Save')
@@ -54,7 +52,7 @@ module HexletCode
       attrs = { name: name.to_s }
               .merge(default_options)
               .merge(options)
-      @last_input = Tag.build('textarea', attrs) { value.to_s }
+      Tag.build('textarea', attrs) { value.to_s }
     end
 
     def add_select(name, value, options)
@@ -67,7 +65,7 @@ module HexletCode
         Tag.build('option', { value: choice }.merge(sel_attr)) { choice }
       end.join("\n")
 
-      @last_input = Tag.build('select', attrs) { options_html }
+      Tag.build('select', attrs) { options_html }
     end
 
     def add_checkbox(name, value, options)
@@ -76,12 +74,12 @@ module HexletCode
       attrs[:checked] = true if checked
       attrs.merge!(options)
 
-      @last_input = Tag.build('input', attrs)
+      Tag.build('input', attrs)
     end
 
     def add_password(name, _value, options)
       attrs = { name: name.to_s, type: 'password' }.merge(options)
-      @last_input = Tag.build('input', attrs)
+      Tag.build('input', attrs)
     end
 
     def add_text_input(name, value, options)
@@ -89,7 +87,7 @@ module HexletCode
       attrs[:value] = value.to_s unless value.nil?
       attrs.merge!(options)
 
-      @last_input = Tag.build('input', attrs)
+      Tag.build('input', attrs)
     end
   end
 end

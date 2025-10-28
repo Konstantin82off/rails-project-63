@@ -1,14 +1,16 @@
 # lib/hexlet_code.rb
 # frozen_string_literal: true
 
+require 'active_support/all'
+
 # Основной модуль HexletCode, предоставляющий DSL для генерации форм
 # в Rails-приложениях. Модуль включает в себя основные компоненты
 # для работы с формами и их элементами.
 module HexletCode
-  # Требует необходимые компоненты
-  require_relative 'hexlet_code/tag'
-  require_relative 'hexlet_code/form_builder'
-  require_relative 'hexlet_code/version'
+  # Настраиваем autoload вместо require_relative
+  autoload :Tag, 'hexlet_code/tag'
+  autoload :FormBuilder, 'hexlet_code/form_builder'
+  autoload :Version, 'hexlet_code/version'
 
   # Создает форму с заданными параметрами и блоком
   #
