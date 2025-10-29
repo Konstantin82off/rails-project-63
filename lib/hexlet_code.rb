@@ -11,6 +11,7 @@ module HexletCode
   autoload :Tag, 'hexlet_code/tag'
   autoload :FormBuilder, 'hexlet_code/form_builder'
   autoload :Version, 'hexlet_code/version'
+  autoload :Inputs, 'hexlet_code/inputs'
 
   # Создает форму с заданными параметрами и блоком
   #

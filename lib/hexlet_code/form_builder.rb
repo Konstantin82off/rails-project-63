@@ -4,15 +4,6 @@
 module HexletCode
   # FormBuilder — строитель HTML-форм для объекта-модели.
   class FormBuilder
-    INPUT_BUILDERS = {
-      input: :add_text_input,
-      select: :add_select,
-      checkbox: :add_checkbox,
-      password: :add_password,
-      text: :add_textarea,
-      textarea: :add_textarea
-    }.freeze
-
     attr_reader :fields
 
     def initialize(entity)
@@ -22,10 +13,10 @@ module HexletCode
 
     def input(name, **options)
       value = @entity.public_send(name)
-      as = (options.delete(:as)&.to_sym || :input).to_sym
+      as = (options.delete(:as)&.to_sym || :text).to_sym
 
       @fields << label(name)
-      @fields << dispatch_input(as, name, value, options)
+      @fields << build_input(as, name, value, options)
     end
 
     def submit(text = 'Save')
@@ -42,52 +33,23 @@ module HexletCode
       Tag.build('label', for: name.to_s) { name.to_s.capitalize }
     end
 
-    def dispatch_input(as, name, value, options)
-      method = INPUT_BUILDERS[as] || :add_text_input
-      send(method, name, value, options)
-    end
+    def build_input(as, name, value, options)
+      klass_name = "#{as.capitalize}Input"
 
-    def add_textarea(name, value, options)
-      default_options = { cols: 20, rows: 40 }
-      attrs = { name: name.to_s }
-              .merge(default_options)
-              .merge(options)
-      Tag.build('textarea', attrs) { value.to_s }
-    end
+      # Явно загружаем файл инпута перед обращением к константе
+      begin
+        # Пытаемся получить класс — это инициирует autoload
+        klass = HexletCode::Inputs.const_get(klass_name)
+      rescue NameError => e
+        raise e unless e.message.include?("uninitialized constant HexletCode::Inputs::#{klass_name}")
 
-    def add_select(name, value, options)
-      choices  = options.delete(:choices)  || []
-      selected = options.delete(:selected) || value
-      attrs    = { name: name.to_s }.merge(options)
+        # Принудительно загружаем модуль Inputs, чтобы autoload сработал
+        # Повторно пытаемся получить класс
+        klass = HexletCode::Inputs.const_get(klass_name)
+      end
 
-      options_html = choices.map do |choice|
-        sel_attr = choice == selected ? { selected: true } : {}
-        Tag.build('option', { value: choice }.merge(sel_attr)) { choice }
-      end.join("\n")
-
-      Tag.build('select', attrs) { options_html }
-    end
-
-    def add_checkbox(name, value, options)
-      checked = options.delete(:checked) || value
-      attrs   = { name: name.to_s, type: 'checkbox', value: value }
-      attrs[:checked] = true if checked
-      attrs.merge!(options)
-
-      Tag.build('input', attrs)
-    end
-
-    def add_password(name, _value, options)
-      attrs = { name: name.to_s, type: 'password' }.merge(options)
-      Tag.build('input', attrs)
-    end
-
-    def add_text_input(name, value, options)
-      attrs = { name: name.to_s, type: 'text' }
-      attrs[:value] = value.to_s unless value.nil?
-      attrs.merge!(options)
-
-      Tag.build('input', attrs)
+      input = klass.new(name, value, options)
+      input.render
     end
   end
 end
