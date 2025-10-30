@@ -1,6 +1,8 @@
 # lib/hexlet_code/inputs/checkbox_input.rb
 # frozen_string_literal: true
 
+require_relative 'base_input'
+
 module HexletCode
   module Inputs
     # Рендерит чекбокс (<input type="checkbox">).

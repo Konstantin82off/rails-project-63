@@ -1,6 +1,8 @@
 # lib/hexlet_code/inputs/select_input.rb
 # frozen_string_literal: true
 
+require_relative 'base_input'
+
 module HexletCode
   module Inputs
     # Рендерит выпадающий список (<select>).

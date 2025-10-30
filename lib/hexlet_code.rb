@@ -2,37 +2,30 @@
 # frozen_string_literal: true
 
 require 'active_support/all'
+require_relative 'hexlet_code/html_renderer'
 
 # Основной модуль HexletCode, предоставляющий DSL для генерации форм
-# в Rails-приложениях. Модуль включает в себя основные компоненты
-# для работы с формами и их элементами.
+# в Rails‑приложениях. Содержит точки входа для построения форм
+# и их элементов.
 module HexletCode
-  # Настраиваем autoload вместо require_relative
   autoload :Tag, 'hexlet_code/tag'
   autoload :FormBuilder, 'hexlet_code/form_builder'
   autoload :Version, 'hexlet_code/version'
   autoload :Inputs, 'hexlet_code/inputs'
 
-  # Создает форму с заданными параметрами и блоком
+  # Создаёт HTML‑форму для заданного объекта с указанными атрибутами.
   #
-  # Параметры:
-  # * entity - объект, для которого создается форма
-  # * url - URL для отправки формы (по умолчанию "#")
-  # * attrs - дополнительные атрибуты формы
-  #
-  # Возвращает:
-  # Строку с HTML-разметкой формы
+  # @param entity [Object] объект, для которого строится форма
+  # @param url [String, nil] URL для отправки формы (по умолчанию '#')
+  # @param attrs [Hash] дополнительные атрибуты тега <form>
+  # @yield [FormBuilder] блок для конфигурирования полей формы
+  # @return [String] HTML‑разметка формы
   def self.form_for(entity, url: nil, **attrs)
     builder = FormBuilder.new(entity)
     yield builder if block_given?
 
-    form_attrs = {}
-    form_attrs[:action] = url || '#'
-    form_attrs[:method] = 'post'
-    form_attrs.merge!(attrs)
-
-    Tag.build('form', form_attrs) do
-      builder.to_s
-    end
+    form_attrs = attrs.merge(url ? { action: url } : {})
+    renderer = HtmlRenderer.new
+    renderer.render(builder.state, form_attrs)
   end
 end
