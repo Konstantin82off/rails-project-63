@@ -6,10 +6,6 @@ require_relative 'fixtures/expected_outputs'
 require_relative '../lib/hexlet_code'
 
 class TestHexletCode < Minitest::Test
-  def normalize_html(html)
-    html.gsub(/\s+/, ' ').strip.gsub(/>\s</, '><')
-  end
-
   def test_that_it_has_a_version_number
     refute_nil ::HexletCode::VERSION
   end
@@ -115,10 +111,5 @@ class TestHexletCode < Minitest::Test
         f.input :age
       end
     end
-  end
-
-  def test_it_does_something_useful
-    skip 'temporary: investigate failing assertion'
-    assert false
   end
 end

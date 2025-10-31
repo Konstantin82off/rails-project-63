@@ -1,41 +1,50 @@
 # lib/hexlet_code/form_builder.rb
 # frozen_string_literal: true
 
-module HexletCode
-  # FormBuilder — строитель HTML-форм для объекта-модели.
-  class FormBuilder
-    INPUT_BUILDERS = {
-      input: :add_text_input, # default
-      select: :add_select,
-      checkbox: :add_checkbox,
-      password: :add_password,
-      text: :add_textarea, # as: :text → <textarea>
-      textarea: :add_textarea # на всякий случай
-    }.freeze
+require_relative 'form_state'
 
+module HexletCode
+  # FormBuilder — собирает состояние формы (поля, метки, кнопки)
+  # без непосредственной генерации HTML. Позволяет отделить логику
+  # сбора данных от их рендеринга.
+  class FormBuilder
+    attr_reader :state
+
+    # Инициализирует сборщик формы для заданного объекта.
+    # @param entity [Object] модель, чьи атрибуты будут использоваться в форме
     def initialize(entity)
       @entity = entity
-      @fields = []
+      @state = FormState.new
     end
 
+    # Добавляет поле в форму с указанным типом и опциями.
+    # @param name [Symbol] имя атрибута модели
+    # @param options [Hash] опции поля (as:, class:, и т.д.)
     def input(name, **options)
       value = @entity.public_send(name)
-      # если as не указан — :input, иначе — тот ключ, который передали
-      as = options.delete(:as)&.to_sym || :input
+      as = (options.delete(:as)&.to_sym || :text).to_sym
 
-      @fields << label(name)
-      dispatch_input(as, name, value, options)
-      @fields << @last_input
+      field = {
+        type: as,
+        name: name,
+        value: value,
+        options: options
+      }
 
-      nil
+      @state.add_field({ role: :label, name: name })
+      @state.add_field(field)
     end
 
+    # Добавляет кнопку отправки формы.
+    # @param text [String] текст на кнопке (по умолчанию 'Save')
     def submit(text = 'Save')
-      @fields << Tag.build('input', type: 'submit', value: text)
+      @state.add_field({ role: :submit, value: text })
     end
 
-    def to_s
-      @fields.join("\n")
+    # Возвращает собранные поля формы (для обратной совместимости).
+    # @return [Array] список полей в формате { role:, name:, value:, options: }
+    def fields
+      @state.fields
     end
 
     private
@@ -44,52 +53,11 @@ module HexletCode
       Tag.build('label', for: name.to_s) { name.to_s.capitalize }
     end
 
-    def dispatch_input(as, name, value, options)
-      method = INPUT_BUILDERS[as] || :add_text_input
-      send(method, name, value, options)
-    end
-
-    def add_textarea(name, value, options)
-      default_options = { cols: 20, rows: 40 }
-      attrs = { name: name.to_s }
-              .merge(default_options)
-              .merge(options)
-      @last_input = Tag.build('textarea', attrs) { value.to_s }
-    end
-
-    def add_select(name, value, options)
-      choices  = options.delete(:choices)  || []
-      selected = options.delete(:selected) || value
-      attrs    = { name: name.to_s }.merge(options)
-
-      options_html = choices.map do |choice|
-        sel_attr = choice == selected ? { selected: true } : {}
-        Tag.build('option', { value: choice }.merge(sel_attr)) { choice }
-      end.join("\n")
-
-      @last_input = Tag.build('select', attrs) { options_html }
-    end
-
-    def add_checkbox(name, value, options)
-      checked = options.delete(:checked) || value
-      attrs   = { name: name.to_s, type: 'checkbox', value: value }
-      attrs[:checked] = true if checked
-      attrs.merge!(options)
-
-      @last_input = Tag.build('input', attrs)
-    end
-
-    def add_password(name, _value, options)
-      attrs = { name: name.to_s, type: 'password' }.merge(options)
-      @last_input = Tag.build('input', attrs)
-    end
-
-    def add_text_input(name, value, options)
-      attrs = { name: name.to_s, type: 'text' }
-      attrs[:value] = value.to_s unless value.nil?
-      attrs.merge!(options)
-
-      @last_input = Tag.build('input', attrs)
+    def build_input(as, name, value, options)
+      klass_name = "#{as.capitalize}Input"
+      klass = HexletCode::Inputs.const_get(klass_name)
+      input = klass.new(name, value, options)
+      input.render
     end
   end
 end
