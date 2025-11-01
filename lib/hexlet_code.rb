@@ -1,7 +1,22 @@
 # lib/hexlet_code.rb
 # frozen_string_literal: true
 
-require 'active_support/all'
+begin
+  require 'bundler'
+  Bundler.setup
+rescue LoadError
+  # Bundler не установлен (крайний случай)
+end
+
+begin
+  require 'active_support/all'
+rescue LoadError => e
+  puts 'ERROR: Не удалось загрузить active_support!'
+  puts "Пути поиска: #{Gem.path.join("\n")}"
+  puts "LOAD_PATH: #{$LOAD_PATH.join("\n")}"
+  raise e
+end
+
 require_relative 'hexlet_code/html_renderer'
 
 # Основной модуль HexletCode, предоставляющий DSL для генерации форм

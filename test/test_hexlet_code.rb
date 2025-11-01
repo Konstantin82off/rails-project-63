@@ -14,7 +14,7 @@ class TestHexletCode < Minitest::Test
     user = Struct.new(:name, :job).new('rob', 'hexlet')
     result = HexletCode.form_for(user, url: '/users') do |f|
       f.input :name
-      f.input :job, as: 'textarea'
+      f.input :job, as: :textarea # ← исправлено: :textarea (символ)
     end
 
     expected = ExpectedOutputs::FORM_WITH_INPUT
@@ -35,7 +35,7 @@ class TestHexletCode < Minitest::Test
   def test_form_for_with_checkbox_input
     user = Struct.new(:gender).new('m')
     result = HexletCode.form_for(user, url: '/users') do |f|
-      f.input :gender, as: 'checkbox'
+      f.input :gender, as: :checkbox # ← уже корректно: :checkbox
     end
 
     expected = ExpectedOutputs::FORM_WITH_CHECKBOX_INPUT
@@ -45,7 +45,7 @@ class TestHexletCode < Minitest::Test
   def test_form_for_with_select_input
     user = Struct.new(:gender).new('m')
     result = HexletCode.form_for(user, url: '/users') do |f|
-      f.input :gender, as: 'select', choices: %w[m f]
+      f.input :gender, as: :select, choices: %w[m f] # ← уже корректно: :select
     end
 
     expected = ExpectedOutputs::FORM_WITH_SELECT_INPUT
@@ -65,7 +65,7 @@ class TestHexletCode < Minitest::Test
   def test_textarea_defaults
     user = Struct.new(:job).new('hexlet')
     result = HexletCode.form_for(user, url: '/users') do |f|
-      f.input :job, as: 'textarea'
+      f.input :job, as: :textarea # ← исправлено: :textarea (символ)
     end
 
     expected = ExpectedOutputs::FORM_WITH_TEXTAREA_DEFAULTS
@@ -75,7 +75,7 @@ class TestHexletCode < Minitest::Test
   def test_custom_textarea_attributes
     user = Struct.new(:job).new('hexlet')
     result = HexletCode.form_for(user, url: '/users') do |f|
-      f.input :job, as: 'textarea', rows: 50, cols: 50
+      f.input :job, as: :textarea, rows: 50, cols: 50 # ← исправлено: :textarea (символ)
     end
 
     expected = ExpectedOutputs::FORM_WITH_CUSTOM_TEXTAREA

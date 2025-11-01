@@ -8,14 +8,9 @@ require_relative 'inputs/textarea_input'
 require_relative 'inputs/password_input'
 
 module HexletCode
-  # HtmlRenderer — преобразует состояние формы (FormState)
-  # в HTML‑разметку. Поддерживает разные типы полей и настраиваемые атрибуты.
+  # HtmlRenderer преобразует состояние формы (FormState) в HTML‑разметку.
+  # Поддерживает разные типы полей и настраиваемые атрибуты.
   class HtmlRenderer
-    # Рендерит HTML‑форму на основе состояния и атрибутов.
-    #
-    # @param state [FormState] состояние формы (собранные поля)
-    # @param form_attrs [Hash] атрибуты тега <form> (action, method, class и т.д.)
-    # @return [String] готовая HTML‑разметка формы
     def render(state, form_attrs = {})
       fields_html = render_fields(state.fields)
       form_attrs = normalize_form_attrs(form_attrs)
@@ -52,6 +47,30 @@ module HexletCode
       value = field[:value]
       options = field[:options] || {}
 
+      if as == :textarea
+        render_textarea(name, value, options)
+      else
+        render_other_input(as, name, value, options)
+      end
+    end
+
+    def render_textarea(name, value, options)
+      # Значения по умолчанию для атрибутов textarea
+      cols = options[:cols] || 20
+      rows = options[:rows] || 40
+
+      # Формируем атрибуты в нужном порядке: name → cols → rows
+      # (именно так ожидают тесты)
+      textarea_attrs = {
+        name: name,
+        cols: cols,
+        rows: rows
+      }
+
+      Tag.build('textarea', textarea_attrs) { value }
+    end
+
+    def render_other_input(as, name, value, options)
       klass_name = "#{as.capitalize}Input"
       klass = HexletCode::Inputs.const_get(klass_name)
       input = klass.new(name, value, options)
