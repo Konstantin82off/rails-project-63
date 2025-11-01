@@ -10,54 +10,46 @@ module HexletCode
   class FormBuilder
     attr_reader :state
 
-    # Инициализирует сборщик формы для заданного объекта.
-    # @param entity [Object] модель, чьи атрибуты будут использоваться в форме
     def initialize(entity)
       @entity = entity
-      @state = FormState.new
+      @state  = FormState.new
     end
 
-    # Добавляет поле в форму с указанным типом и опциями.
-    # @param name [Symbol] имя атрибута модели
-    # @param options [Hash] опции поля (as:, class:, и т.д.)
+    # теперь всего 4 строки + заголовок
     def input(name, **options)
+      type  = extract_type!(options)
       value = @entity.public_send(name)
-      as = (options.delete(:as)&.to_sym || :text).to_sym
-
-      field = {
-        type: as,
-        name: name,
-        value: value,
-        options: options
-      }
-
-      @state.add_field({ role: :label, name: name })
-      @state.add_field(field)
+      add_label(name)
+      add_field(type, name, value, options)
     end
 
-    # Добавляет кнопку отправки формы.
-    # @param text [String] текст на кнопке (по умолчанию 'Save')
     def submit(text = 'Save')
-      @state.add_field({ role: :submit, value: text })
-    end
-
-    # Возвращает собранные поля формы (для обратной совместимости).
-    # @return [Array] список полей в формате { role:, name:, value:, options: }
-    def fields
-      @state.fields
+      @state.add_field(role: :submit, value: text)
     end
 
     private
 
-    def label(name)
-      Tag.build('label', for: name.to_s) { name.to_s.capitalize }
+    # Выбирает и удаляет :as из options
+    def extract_type!(options)
+      as = options.delete(:as)&.to_sym
+      case as
+      when :text, :textarea then :textarea
+      when nil then :text
+      else as
+      end
     end
 
-    def build_input(as, name, value, options)
-      klass_name = "#{as.capitalize}Input"
-      klass = HexletCode::Inputs.const_get(klass_name)
-      input = klass.new(name, value, options)
-      input.render
+    def add_label(name)
+      @state.add_field(role: :label, name: name)
+    end
+
+    def add_field(type, name, value, options)
+      @state.add_field(
+        type: type,
+        name: name,
+        value: value,
+        options: options
+      )
     end
   end
 end
