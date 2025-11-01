@@ -12,12 +12,20 @@ module HexletCode
     class TextareaInput < BaseInput
       def render
         default_options = { cols: 20, rows: 40 }
+
+        # составляем attrs, исключая ключ :as
         attrs = { name: @name.to_s }
                 .merge(default_options)
-                .merge(@options)
+                .merge(filtered_options)
 
         attr_string = build_attributes(attrs)
-        "<textarea #{attr_string}>#{@value}</textarea>".strip
+        "<textarea #{attr_string}>#{@value}</textarea>"
+      end
+
+      private
+
+      def filtered_options
+        @options.except(:as)
       end
     end
   end
