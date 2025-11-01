@@ -11,12 +11,9 @@ module HexletCode
     # Переопределить размеры и прочие атрибуты можно через options.
     class TextareaInput < BaseInput
       def render
-        default_options = { cols: 20, rows: 40 }
-
-        # составляем attrs, исключая ключ :as
-        attrs = { name: @name.to_s }
-                .merge(default_options)
-                .merge(filtered_options)
+        default_options = { rows: 40, cols: 20 }
+        attrs = { name: @name.to_s }.merge(default_options)
+                                    .merge(filtered_options)
 
         attr_string = build_attributes(attrs)
         "<textarea #{attr_string}>#{@value}</textarea>"
