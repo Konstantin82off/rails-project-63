@@ -7,15 +7,16 @@
 
 HexletCode is a Ruby library for declarative HTML form generation. It builds forms bound to your Ruby objects, auto-fills values, and supports passing arbitrary HTML attributes.
 
-**Key Features (v0.2.0):**
+**Key Features (v0.2.1):**
 - Object binding with automatic value population
 - Separation of concerns: form state (`FormState`) and rendering (`HtmlRenderer`)
-- Field types: input, textarea, checkbox, select, password
+- Field types: input, textarea (with customizable rows/cols), checkbox, select, password
 - Custom HTML attributes (class, placeholder, id, etc.)
 - Labels for each input field
 - Submit button with customizable text and attributes
 - Modular input system via `HexletCode::Inputs` namespace
 - Autoloading of core components (`HexletCode`, `Tag`, `FormBuilder`, etc.)
+- Improved `FormBuilder` readability via refactored input logic
 
 ## Requirements
 
@@ -70,8 +71,11 @@ end
 # Text input (default)
 f.input :name
 
-# Textarea
+# Textarea with default rows=50, cols=50
 f.input :job, as: :text
+
+# Custom rows/cols for textarea
+f.input :job, as: :text, rows: 30, cols: 80
 
 # Checkbox
 f.input :gender, as: :checkbox
@@ -96,7 +100,7 @@ f.submit 'Save', class: 'btn btn-primary'  # with additional attributes
   <label for="name">Name</label>
   <input name="name" type="text" class="user-input" placeholder="Enter your name">
   <label for="job">Job</label>
-  <textarea name="job">hexlet</textarea>
+  <textarea name="job" rows="50" cols="50">hexlet</textarea>
   <input type="submit" value="Save" class="btn btn-primary">
 </form>
 ```
@@ -167,7 +171,7 @@ bundle exec rake install
 bundle exec rake release
 ```
 
-## Contributing
+### Contributing
 1. Create a feature branch:
 ```bash
 git checkout -b feat/something
@@ -180,7 +184,7 @@ git commit -m "feat: add new input type"
 ```bash
 git push -u origin feat/something
 ```
-4 Open a pull request:
+4. Open a pull request:
 
 <https://github.com/Konstantin82off/rails-project-63>
 

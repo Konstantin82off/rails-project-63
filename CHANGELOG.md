@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+<!-- Placeholder for future changes -->
+
+## 0.2.1 — 2025-11-02
+
+### Added
+- **Textarea support**: Added default `rows: 50` and `cols: 50` for `<textarea>` fields.
+- **Refactored FormBuilder**:
+  - Extracted field type detection into private method `extract_type!`.
+  - Added private methods `add_label` and `add_field` for better code organization.
+  - Simplified `input` method to improve readability.
+
+### Fixed
+- **Textarea attributes**:
+  - Filtered out `:as` option from HTML attributes to prevent leakage into markup.
+  - Standardized attribute order: `rows` before `cols` in `<textarea>`.
+
+### Changed
+- **Unified rendering**: `<textarea>` now uses the same helper as `<input>` for consistent form generation.
+
 ## 0.2.0 — 2025-10-28
 
 ### Breaking Changes
@@ -26,7 +45,6 @@ All notable changes to this project will be documented in this file.
   - Moved form field collection to `FormBuilder`.
   - Fixed dependency loading via `require_relative`.
 
-
 ### Fixed
 - **HTML output**: Removed extra leading space in form attributes (e.g., `<form  action=...>` → `<form action=...>`).
 - **Syntax**: Corrected `block.given?` → `block_given?` in `Tag.build`.
@@ -34,7 +52,6 @@ All notable changes to this project will be documented in this file.
 - **Redundancy**: Removed unnecessary `.strip` calls in `Tag` rendering.
 - **LoadError**: Resolved issue with loading `html_renderer.rb`.
 - **NameError**: Fixed missing `BaseInput` in input classes.
-
 
 ### Added
 - **Dependencies**: Added `active_support` requirement to support `autoload`.
