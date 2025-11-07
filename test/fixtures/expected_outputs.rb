@@ -5,7 +5,7 @@ module ExpectedOutputs
   FORM_WITH_INPUT = <<~HTML.strip
     <form action="/users" method="post">
       <label for="name">Name</label>
-      <input name="name" type="text" value="rob">
+      <input name="name" value="rob" type="text">
       <label for="job">Job</label>
       <textarea name="job" cols="20" rows="40">hexlet</textarea>
     </form>
@@ -14,9 +14,9 @@ module ExpectedOutputs
   FORM_WITH_ADDITIONAL_ATTRIBUTES = <<~HTML.strip
     <form action="/users" method="post">
       <label for="name">Name</label>
-      <input name="name" type="text" value="rob" class="user-input">
+      <input name="name" class="user-input" value="rob" type="text">
       <label for="job">Job</label>
-      <input name="job" type="text" value="hexlet">
+      <input name="job" value="hexlet" type="text">
     </form>
   HTML
 
@@ -61,16 +61,16 @@ module ExpectedOutputs
   FORM_WITH_DEFAULT_INPUT = <<~HTML.strip
     <form action="/users" method="post">
       <label for="name">Name</label>
-      <input name="name" type="text" value="rob">
+      <input name="name" value="rob" type="text">
     </form>
   HTML
 
   FORM_WITH_LABELS_AND_SUBMIT = <<~HTML.strip
     <form action="/users" method="post">
       <label for="name">Name</label>
-      <input name="name" type="text" value="rob">
+      <input name="name" value="rob" type="text">
       <label for="job">Job</label>
-      <input name="job" type="text" value="hexlet">
+      <input name="job" value="hexlet" type="text">
       <input type="submit" value="Save">
     </form>
   HTML
@@ -78,9 +78,9 @@ module ExpectedOutputs
   FORM_WITH_CUSTOM_SUBMIT = <<~HTML.strip
     <form action="/users" method="post">
       <label for="name">Name</label>
-      <input name="name" type="text" value="rob">
+      <input name="name" value="rob" type="text">
       <label for="job">Job</label>
-      <input name="job" type="text" value="hexlet">
+      <input name="job" value="hexlet" type="text">
       <input type="submit" value="Update">
     </form>
   HTML

@@ -1,46 +1,29 @@
 # lib/hexlet_code.rb
 # frozen_string_literal: true
 
-begin
-  require 'bundler'
-  Bundler.setup
-rescue LoadError
-  # Bundler не установлен (крайний случай)
-end
-
-begin
-  require 'active_support/all'
-rescue LoadError => e
-  puts 'ERROR: Не удалось загрузить active_support!'
-  puts "Пути поиска: #{Gem.path.join("\n")}"
-  puts "LOAD_PATH: #{$LOAD_PATH.join("\n")}"
-  raise e
-end
-
-require_relative 'hexlet_code/html_renderer'
-
-# Основной модуль HexletCode, предоставляющий DSL для генерации форм
-# в Rails‑приложениях. Содержит точки входа для построения форм
-# и их элементов.
+# HexletCode — DSL‑библиотека для генерации HTML‑форм.
 module HexletCode
+  autoload :Version, 'hexlet_code/version'
   autoload :Tag, 'hexlet_code/tag'
   autoload :FormBuilder, 'hexlet_code/form_builder'
-  autoload :Version, 'hexlet_code/version'
-  autoload :Inputs, 'hexlet_code/inputs'
+  autoload :HtmlRenderer, 'hexlet_code/html_renderer'
 
-  # Создаёт HTML‑форму для заданного объекта с указанными атрибутами.
-  #
-  # @param entity [Object] объект, для которого строится форма
-  # @param url [String, nil] URL для отправки формы (по умолчанию '#')
-  # @param attrs [Hash] дополнительные атрибуты тега <form>
-  # @yield [FormBuilder] блок для конфигурирования полей формы
-  # @return [String] HTML‑разметка формы
-  def self.form_for(entity, url: nil, **attrs)
+  # Пространство имён для классов input-компонентов
+  module Inputs
+    autoload :BaseInput, 'hexlet_code/inputs/base_input'
+    autoload :TextInput, 'hexlet_code/inputs/text_input'
+    autoload :TextareaInput, 'hexlet_code/inputs/textarea_input'
+    autoload :SelectInput, 'hexlet_code/inputs/select_input'
+    autoload :CheckboxInput, 'hexlet_code/inputs/checkbox_input'
+    autoload :PasswordInput, 'hexlet_code/inputs/password_input'
+    autoload :SubmitInput, 'hexlet_code/inputs/submit_input'
+  end
+
+  def self.form_for(entity, **attrs)
     builder = FormBuilder.new(entity)
     yield builder if block_given?
 
-    form_attrs = attrs.merge(url ? { action: url } : {})
     renderer = HtmlRenderer.new
-    renderer.render(builder.state, form_attrs)
+    renderer.render(builder, attrs)
   end
 end

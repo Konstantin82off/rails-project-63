@@ -1,43 +1,39 @@
 # lib/hexlet_code/inputs/select_input.rb
 # frozen_string_literal: true
 
-require_relative 'base_input'
-
 module HexletCode
   module Inputs
     # Рендерит выпадающий список (<select>).
-    # Поддерживает:
-    # - список вариантов через :choices
-    # - предустановленное значение через :selected или @value
-    # - произвольные атрибуты для тега <select>
     class SelectInput < BaseInput
       def render
-        attrs = prepare_attributes
-        options_html = render_options
-        attr_string = build_attributes(attrs)
-        "<select #{attr_string}>\n#{options_html}\n</select>".strip
+        select_attrs = tag_options.except(:choices)
+        options_html = build_options_html
+        Tag.build('select', select_attrs) { "\n#{options_html}\n" }
       end
 
       private
 
-      def prepare_attributes
-        attrs = { name: @name.to_s }.merge(@options)
-        attrs.delete(:choices)
-        attrs.delete(:selected)
-        attrs
-      end
-
-      def render_options
-        choices  = @options.fetch(:choices, [])
-        selected = @options.fetch(:selected, @value)
-
-        choices.map do |choice|
-          if choice == selected
-            Tag.build('option', { value: choice, selected: true }) { choice }
+      def build_options_html
+        @options[:choices].to_a.map do |choice|
+          if choice.is_a?(Array)
+            build_option_with_value_and_label(choice)
           else
-            Tag.build('option', { value: choice }) { choice }
+            build_option_with_single_value(choice)
           end
         end.join("\n")
+      end
+
+      def build_option_with_value_and_label(choice)
+        value, label = choice
+        attrs = { value: value }
+        attrs[:selected] = true if value == @value
+        Tag.build('option', attrs) { label }
+      end
+
+      def build_option_with_single_value(choice)
+        attrs = { value: choice }
+        attrs[:selected] = true if choice == @value
+        Tag.build('option', attrs) { choice }
       end
     end
   end
