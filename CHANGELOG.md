@@ -4,7 +4,30 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-<!-- Placeholder for future changes -->
+## 0.3.0 — 2025-11-08
+
+### Added
+- **Skip label option**: Added `skip_label: true` to `input` method to suppress label rendering.
+- **Dedicated SubmitInput class**: Isolated submit button logic into `HexletCode::Inputs::SubmitInput`.
+- **Tag.build_attributes**: Public method for consistent attribute processing.
+
+### Fixed
+- **HTML attribute leakage**: Prevented `:as` and other internal keys from appearing in HTML output.
+- **Checkbox rendering**: Fixed `checked` attribute generation (now uses `checked="checked"`).
+- **Select input**: Restored proper `<option>` rendering with `selected` attribute.
+- **Textarea attributes**: Fixed custom `cols`/`rows` handling.
+
+
+### Changed
+- **Input constructors**: All inputs now accept `name: Symbol`, `value: String?`, `options: Hash`.
+- **HtmlRenderer**: Simplified `create_input` logic — now passes only relevant options.
+- **FormBuilder**: Removed redundant state management (no `FormState` class).
+- **Tests**: Stabilized all test cases (14 runs, 14 assertions, 0 failures).
+
+
+### Removed
+- **Redundant methods**: Eliminated duplicate attribute merging logic.
+- **Internal keys**: `:as` is no longer exposed in HTML attributes.
 
 ## 0.2.1 — 2025-11-02
 
