@@ -6,16 +6,15 @@ module HexletCode
     # Рендерит многострочное поле ввода (<textarea>).
     class TextareaInput < BaseInput
       def render
-        cols = @options.fetch(:cols, 20)
-        rows = @options.fetch(:rows, 40)
+        default_options = { cols: 20, rows: 40 }
 
-        textarea_attrs = {
-          name: @name,
-          cols: cols,
-          rows: rows
-        }
+        attrs = { name: @name.to_s }
+                .merge(default_options)
+                .merge(@options)
 
-        Tag.build('textarea', textarea_attrs) { @value }
+        HexletCode::Tag.build('textarea', attrs) do
+          @value.to_s
+        end
       end
     end
   end
