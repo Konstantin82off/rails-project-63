@@ -1,15 +1,21 @@
+# lib/hexlet_code/inputs/textarea_input.rb
 # frozen_string_literal: true
 
 module HexletCode
   module Inputs
-    # Рендерит <textarea> с дефолтными rows/cols = 50.
+    # Рендерит многострочное поле ввода (<textarea>).
     class TextareaInput < BaseInput
       def render
-        default_options = { rows: 50, cols: 50 }
-        attrs = { name: @name.to_s }
-                .merge(default_options)
-                .merge(@options)
-        "<textarea #{build_attributes(attrs)}>#{escape_attr_value(@value)}</textarea>"
+        cols = @options.fetch(:cols, 20)
+        rows = @options.fetch(:rows, 40)
+
+        textarea_attrs = {
+          name: @name,
+          cols: cols,
+          rows: rows
+        }
+
+        Tag.build('textarea', textarea_attrs) { @value }
       end
     end
   end

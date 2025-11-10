@@ -7,16 +7,16 @@
 
 HexletCode is a Ruby library for declarative HTML form generation. It builds forms bound to your Ruby objects, auto-fills values, and supports passing arbitrary HTML attributes.
 
-**Key Features (v0.2.1):**
+**Key Features (v0.3.0):**
 - Object binding with automatic value population
-- Separation of concerns: form state (`FormState`) and rendering (`HtmlRenderer`)
-- Field types: input, textarea (with customizable rows/cols), checkbox, select, password
+- Label control: `skip_label: true` to suppress labels
+- Field types: text, textarea, checkbox, select, password, submit
 - Custom HTML attributes (class, placeholder, id, etc.)
-- Labels for each input field
-- Submit button with customizable text and attributes
 - Modular input system via `HexletCode::Inputs` namespace
-- Autoloading of core components (`HexletCode`, `Tag`, `FormBuilder`, etc.)
-- Improved `FormBuilder` readability via refactored input logic
+- Autoloading of core components
+- Clean separation of form state and rendering logic
+- Support for custom submit button attributes
+- Flexible option handling with proper filtering of internal keys
 
 ## Requirements
 
@@ -71,27 +71,32 @@ end
 # Text input (default)
 f.input :name
 
-# Textarea with default rows=50, cols=50
-f.input :job, as: :text
-
-# Custom rows/cols for textarea
+# Textarea with custom rows/cols
 f.input :job, as: :text, rows: 30, cols: 80
 
 # Checkbox
 f.input :gender, as: :checkbox
 
-# Select
+# Select with choices
 f.input :gender, as: :select, choices: %w[m f]
 
 # Password
 f.input :password, as: :password
+
+# Submit button
+f.submit 'Submit'
 ```
 
-### Custom Submit Button
+### Skip Label
 ```ruby
-f.submit                # default "Save" button
-f.submit 'Wow'         # custom button text
-f.submit 'Save', class: 'btn btn-primary'  # with additional attributes
+f.input :terms, as: :checkbox, skip_label: true  # No <label> rendered
+```
+
+### Custom Submit Button Attributes
+```ruby
+f.submit                                    # default "Save" button
+f.submit 'Wow'                              # custom button text
+f.submit 'Save', class: 'btn btn-primary' # with additional attributes
 ```
 
 ### Example HTML Output
@@ -100,7 +105,7 @@ f.submit 'Save', class: 'btn btn-primary'  # with additional attributes
   <label for="name">Name</label>
   <input name="name" type="text" class="user-input" placeholder="Enter your name">
   <label for="job">Job</label>
-  <textarea name="job" rows="50" cols="50">hexlet</textarea>
+  <textarea name="job" rows="30" cols="80">hexlet</textarea>
   <input type="submit" value="Save" class="btn btn-primary">
 </form>
 ```
@@ -109,35 +114,27 @@ f.submit 'Save', class: 'btn btn-primary'  # with additional attributes
 
 ### Key Concepts
 
-**1. FormState**
-Stores the form data structure without HTML coupling.
-
-**2. FormBuilder**
+**1. FormBuilder**
 Collects form fields, labels, and buttons. Passes state to the renderer.
 
-**3. HtmlRenderer**
-Converts `FormState` into HTML markup. Handles all rendering logic.
+**2. HtmlRenderer**
+Converts form state into HTML markup. Handles all rendering logic.
 
-**4. HexletCode::Inputs Module**
+**3. HexletCode::Inputs Module**
 Manages input types via dedicated classes:
 
 - `HexletCode::Inputs::BaseInput (abstract base)`
-
 - `HexletCode::Inputs::TextInput`
-
 - `HexletCode::Inputs::CheckboxInput`
-
 - `HexletCode::Inputs::PasswordInput`
-
 - `HexletCode::Inputs::SelectInput`
-
 - `HexletCode::Inputs::TextareaInput`
+- `HexletCode::Inputs::SubmitInput`
 
 ### Important Notes (Breaking Changes)
-- **Input Namespace:** Use `HexletCode::Inputs::[InputType]` to access input classes.
 
+- **Input Namespace:** Use `HexletCode::Inputs::\[InputType\]` to access input classes.
 - **HTML Generation:** Now handled by `HtmlRenderer`, not `FormBuilder`.
-
 - **Autoloading:** Core components use `autoload` instead of `require_relative`.
 
 ## Development
@@ -173,7 +170,7 @@ bundle exec rake release
 
 ### Contributing
 1. Create a feature branch:
-```bash
+```ash
 git checkout -b feat/something
 ```
 2. Commit your changes:
@@ -191,7 +188,7 @@ git push -u origin feat/something
 ## License
 MIT (see LICENSE)
 
-## GitHub
+## **GitHub**
 
 [GitHub-Konstantin82off/rails-project-63](https://github.com/Konstantin82off/rails-project-63)
 

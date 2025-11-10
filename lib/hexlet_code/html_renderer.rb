@@ -1,88 +1,75 @@
 # lib/hexlet_code/html_renderer.rb
 # frozen_string_literal: true
 
-require_relative 'inputs/text_input'
-require_relative 'inputs/checkbox_input'
-require_relative 'inputs/select_input'
-require_relative 'inputs/textarea_input'
-require_relative 'inputs/password_input'
-
 module HexletCode
-  # HtmlRenderer преобразует состояние формы (FormState) в HTML‑разметку.
-  # Поддерживает разные типы полей и настраиваемые атрибуты.
+  # Преобразует собранные FormBuilder данные в HTML.
+  # Делегирует рендеринг конкретных типов полей соответствующим классам
+  # из HexletCode::Inputs (например, TextInput, TextareaInput).
   class HtmlRenderer
-    def render(state, form_attrs = {})
-      fields_html = render_fields(state.fields)
+    # Рендерит HTML‑форму на основе состояния FormBuilder.
+    def render(builder, form_attrs = {})
       form_attrs = normalize_form_attrs(form_attrs)
+      fields_html = render_fields(builder.fields)
+      submit_html = render_submit(builder.submit_value)
 
-      Tag.build('form', form_attrs) { fields_html }
+      form_content = [fields_html, submit_html].join("\n").strip
+      Tag.build('form', form_attrs) { form_content }
     end
 
     private
 
     def render_fields(fields)
-      fields.map do |field|
-        case field[:role]
-        when :label
-          render_label(field[:name])
-        when :submit
-          render_submit(field[:value])
-        else
-          render_input(field)
-        end
-      end.join("\n")
+      fields.map { |field| render_field(field) }.join("\n")
     end
 
-    def render_label(name)
-      Tag.build('label', for: name.to_s) { name.to_s.capitalize }
-    end
+    def render_field(field)
+      input = create_input(field)
+      input_html = input.render
 
-    def render_submit(value)
-      Tag.build('input', type: 'submit', value: value)
-    end
-
-    def render_input(field)
-      as = field[:type]
-      name = field[:name]
-      value = field[:value]
-      options = field[:options] || {}
-
-      if as == :textarea
-        render_textarea(name, value, options)
+      if field[:options][:skip_label]
+        input_html
       else
-        render_other_input(as, name, value, options)
+        label_text = field[:options][:label] || humanize_name(field[:name])
+        label_attrs = { for: field[:name].to_s }
+        label_html = Tag.build('label', label_attrs) { label_text }
+
+        "#{label_html}\n#{input_html}"
       end
     end
 
-    def render_textarea(name, value, options)
-      # Значения по умолчанию для атрибутов textarea
-      cols = options[:cols] || 20
-      rows = options[:rows] || 40
+    def create_input(field)
+      type = field[:type]
+      name = field[:name]
+      value = field.fetch(:value, '').to_s
 
-      # Формируем атрибуты в нужном порядке: name → cols → rows
-      # (именно так ожидают тесты)
-      textarea_attrs = {
-        name: name,
-        cols: cols,
-        rows: rows
-      }
+      options = (field[:options] || {}).except(:as)
 
-      Tag.build('textarea', textarea_attrs) { value }
+      klass_name = "#{type.capitalize}Input"
+      klass = HexletCode::Inputs.const_get(klass_name)
+      klass.new(name, value, options)
     end
 
-    def render_other_input(as, name, value, options)
-      klass_name = "#{as.capitalize}Input"
-      klass = HexletCode::Inputs.const_get(klass_name)
-      input = klass.new(name, value, options)
+    def render_submit(value)
+      return '' unless value
+
+      input = HexletCode::Inputs::SubmitInput.new('submit', value, {})
       input.render
+    end
+
+    def humanize_name(name)
+      name.to_s.tr('_', ' ').split.map(&:capitalize).join(' ')
     end
 
     def normalize_form_attrs(attrs)
       defaults = { action: '#', method: 'post' }
-      defaults.merge(attrs).tap do |result|
-        result[:action] ||= '#'
-        result[:method] ||= 'post'
+      result = defaults.merge(attrs)
+
+      if result.key?(:url)
+        result[:action] = result[:url]
+        result.delete(:url)
       end
+
+      result
     end
   end
 end

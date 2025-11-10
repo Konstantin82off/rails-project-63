@@ -1,11 +1,9 @@
 # lib/hexlet_code/inputs/password_input.rb
 # frozen_string_literal: true
 
-require_relative 'base_input'
-
 module HexletCode
   module Inputs
-    # Рендерит парольное поле (<input type="password">).
+    # Рендерит поле для ввода пароля (<input type="password">).
     class PasswordInput < BaseInput
       def render
         default_options = { type: 'password' }
@@ -14,7 +12,7 @@ module HexletCode
                 .merge(@options)
 
         attr_string = build_attributes(attrs)
-        "<input #{attr_string}>".strip
+        "<input #{attr_string}>"
       end
     end
   end

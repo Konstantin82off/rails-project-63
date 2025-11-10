@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    hexlet_code (0.2.1)
+    hexlet_code (0.3.0)
       activesupport (~> 7.0)
 
 GEM
@@ -90,7 +90,6 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  activesupport (~> 7.0)
   hexlet_code!
   irb
   minitest (~> 5.16)
