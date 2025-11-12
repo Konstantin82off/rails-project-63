@@ -5,6 +5,10 @@ module HexletCode
   module Inputs
     # Рендерит выпадающий список (<select>).
     class SelectInput < BaseInput
+      def initialize(name:, value:, options: {})
+        super
+      end
+
       def render
         select_attrs = tag_options.except(:choices)
         options_html = build_options_html

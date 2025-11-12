@@ -5,6 +5,10 @@ module HexletCode
   module Inputs
     # Рендерит чекбокс (<input type="checkbox">).
     class CheckboxInput < BaseInput
+      def initialize(name:, value:, options: {})
+        super
+      end
+
       def render
         attrs = {
           name: @name.to_s,

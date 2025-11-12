@@ -90,7 +90,8 @@ class TestHexletCode < Minitest::Test
       f.submit
     end
 
-    assert_equal normalize_html(ExpectedOutputs::FORM_WITH_LABELS_AND_SUBMIT), normalize_html(result)
+    expected = ExpectedOutputs::FORM_WITH_LABELS_AND_SUBMIT
+    assert_equal normalize_html(expected), normalize_html(result)
   end
 
   def test_custom_submit_text
@@ -101,7 +102,8 @@ class TestHexletCode < Minitest::Test
       f.submit 'Update'
     end
 
-    assert_equal normalize_html(ExpectedOutputs::FORM_WITH_CUSTOM_SUBMIT), normalize_html(result)
+    expected = ExpectedOutputs::FORM_WITH_CUSTOM_SUBMIT
+    assert_equal normalize_html(expected), normalize_html(result)
   end
 
   def test_missing_field_error

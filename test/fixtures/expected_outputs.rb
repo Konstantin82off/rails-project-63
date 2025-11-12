@@ -71,7 +71,7 @@ module ExpectedOutputs
       <input name="name" value="rob" type="text">
       <label for="job">Job</label>
       <input name="job" value="hexlet" type="text">
-      <input type="submit" value="Save">
+      <button type="submit">Save</button>
     </form>
   HTML
 
@@ -81,7 +81,7 @@ module ExpectedOutputs
       <input name="name" value="rob" type="text">
       <label for="job">Job</label>
       <input name="job" value="hexlet" type="text">
-      <input type="submit" value="Update">
+      <button type="submit">Update</button>
     </form>
   HTML
 end
