@@ -19,10 +19,12 @@ module HexletCode
     #   label: - текст лейбла (String?, optional)
     def input(name: Symbol, **options: untyped): self
 
+
     # Метод создания кнопки отправки формы
     # value - текст на кнопке (String, default: "Save")
     # options - дополнительные HTML-атрибуты кнопки (Hash, optional)
     def submit(value: String = "Save", **options: untyped): self
+
 
     # Преобразование формы в строку HTML
     def to_s(): String
@@ -30,8 +32,10 @@ module HexletCode
     # Атрибут с собранными полями формы
     attr_reader fields: Array[Hash[Symbol, untyped]]
 
+
     # Атрибут с настройками кнопки submit (хеш с ключами :value и :options)
     attr_reader submit_value: Hash[Symbol, untyped] | nil
+
 
     private
 
@@ -94,10 +98,11 @@ module HexletCode
       def render(): String
     end
 
-    # Рендерит кнопку отправки формы (<button type="submit"> или <input type="submit">).
+    # Рендерит кнопку отправки формы (<button type="submit">).
+    # value используется только как текст внутри кнопки (не передаётся в атрибут value HTML).
+    # name игнорируется для submit, используется только value (текст кнопки).
     class SubmitInput < BaseInput
       def initialize(name: Symbol, value: String?, options: Hash): void
-      # name игнорируется для submit, используется только value (текст кнопки)
       def render(): String
     end
   end

@@ -97,10 +97,15 @@ f.input :terms, as: :checkbox, skip_label: true  # No <label> rendered
 
 ### Custom Submit Button Attributes
 ```ruby
-f.submit                                    # default "Save" button
-f.submit 'Wow'                              # custom button text
-f.submit 'Save', class: 'btn btn-primary', type: 'button' # with additional attributes
+f.submit                     # default "Save! button
+f.submit 'Wow'              # custom button text
+f.submit 'Save', class: 'btn btn-primary'  # with additional attributes (but no `value` attribute in HTML)
 ```
+> **Note:**  
+> - The `value` parameter in `f.submit` sets the *visible text* of the button (e.g., `f.submit 'Send'` → `<button>Send</button>`).  
+> - The HTML `<button>` tag is **rendered without the `value="..."` attribute**.  
+> - This follows HTML5 semantics and produces cleaner markup.
+
 
 ### Example HTML Output
 ```html
