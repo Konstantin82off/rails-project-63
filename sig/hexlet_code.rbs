@@ -6,7 +6,7 @@ module HexletCode
   class FormBuilder
     # Конструктор FormBuilder
     # entity - объект, к которому привязывается форма
-    def initialize(entity: Object): void
+    def initialize(entity: untyped): void
 
     # Основной метод для создания полей ввода
     # name - имя поля (Symbol)
@@ -17,30 +17,38 @@ module HexletCode
     #   placeholder: - текст-заполнитель (String?, optional)
     #   skip_label: - не создавать лейбл (Boolean?, optional)
     #   label: - текст лейбла (String?, optional)
-    def input(name: Symbol, **options: untyped): void
+    def input(name: Symbol, **options: untyped): self
 
     # Метод создания кнопки отправки формы
-    # text - текст на кнопке (String)
-    # options - дополнительные атрибуты кнопки (Hash, optional)
-    def submit(text: String = "Save", **options: untyped): void
+    # value - текст на кнопке (String, default: "Save")
+    # options - дополнительные HTML-атрибуты кнопки (Hash, optional)
+    def submit(value: String = "Save", **options: untyped): self
 
     # Преобразование формы в строку HTML
     def to_s(): String
 
+    # Атрибут с собранными полями формы
+    attr_reader fields: Array[Hash[Symbol, untyped]]
+
+    # Атрибут с настройками кнопки submit (хеш с ключами :value и :options)
+    attr_reader submit_value: Hash[Symbol, untyped] | nil
+
+    private
+
     # Создание текстового поля
-    private def add_textarea(name: Symbol, value: String, options: Hash): void
+    def add_textarea(name: Symbol, value: String, options: Hash): void
     # Создание выпадающего списка
-    private def add_select(name: Symbol, value: String, options: Hash): void
+    def add_select(name: Symbol, value: String, options: Hash): void
     # Создание чекбокса
-    private def add_checkbox(name: Symbol, value: String, options: Hash): void
+    def add_checkbox(name: Symbol, value: String, options: Hash): void
     # Создание поля пароля
-    private def add_password(name: Symbol, value: String, options: Hash): void
+    def add_password(name: Symbol, value: String, options: Hash): void
     # Создание обычного текстового поля
-    private def add_text_input(name: Symbol, value: String, options: Hash): void
+    def add_text_input(name: Symbol, value: String, options: Hash): void
     # Создание тега label
-    private def label(name: Symbol): String
+    def label(name: Symbol): String
     # Создание кнопки отправки формы
-    private def add_submit(value: String, options: Hash): void
+    def add_submit(value: String, options: Hash): void
   end
 
   # Вспомогательный класс для построения HTML-тегов
@@ -86,7 +94,7 @@ module HexletCode
       def render(): String
     end
 
-    # Рендерит кнопку отправки формы (<input type="submit">).
+    # Рендерит кнопку отправки формы (<button type="submit"> или <input type="submit">).
     class SubmitInput < BaseInput
       def initialize(name: Symbol, value: String?, options: Hash): void
       # name игнорируется для submit, используется только value (текст кнопки)

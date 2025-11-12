@@ -84,7 +84,10 @@ f.input :gender, as: :select, choices: %w[m f]
 f.input :password, as: :password
 
 # Submit button
-f.submit 'Submit'
+f.submit                      # default text: "Save"
+f.submit 'Submit'              # custom text
+f.submit 'Send', class: 'btn' # with HTML attributes
+
 ```
 
 ### Skip Label
@@ -96,7 +99,7 @@ f.input :terms, as: :checkbox, skip_label: true  # No <label> rendered
 ```ruby
 f.submit                                    # default "Save" button
 f.submit 'Wow'                              # custom button text
-f.submit 'Save', class: 'btn btn-primary' # with additional attributes
+f.submit 'Save', class: 'btn btn-primary', type: 'button' # with additional attributes
 ```
 
 ### Example HTML Output
@@ -106,7 +109,7 @@ f.submit 'Save', class: 'btn btn-primary' # with additional attributes
   <input name="name" type="text" class="user-input" placeholder="Enter your name">
   <label for="job">Job</label>
   <textarea name="job" rows="30" cols="80">hexlet</textarea>
-  <input type="submit" value="Save" class="btn btn-primary">
+  <button type="submit" class="btn btn-primary">Save</button>
 </form>
 ```
 
