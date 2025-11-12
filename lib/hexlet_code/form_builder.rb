@@ -6,7 +6,7 @@ module HexletCode
   # без непосредственной генерации HTML. Позволяет отделить логику
   # сбора данных от их рендеринга.
   class FormBuilder
-    attr_reader :entity, :fields, :submit_value
+    attr_reader :fields, :submit_value
 
     def initialize(entity)
       @entity = entity
@@ -19,41 +19,32 @@ module HexletCode
       self
     end
 
-    def submit(value = 'Save')
-      @submit_value = value
+    def submit(value = 'Save', options = {})
+      @submit_value = { value: value, options: options }
       self
     end
 
     private
 
     def build_field(name, options)
-      opts  = options.dup
-      type  = extract_type(opts.delete(:as))
+      opts = options.dup
+      type = extract_type(opts.delete(:as))
       value = extract_value(name, opts)
-      clean_non_textarea_dims!(opts, type)
 
       { type: type, name: name, value: value, options: opts }
-    end
-
-    def clean_non_textarea_dims!(opts, type)
-      return if type == :textarea
-
-      opts.delete(:rows)
-      opts.delete(:cols)
     end
 
     def extract_type(as)
       return :text if as.nil?
 
-      sym = as.to_sym
-      return :textarea if %i[text textarea].include?(sym)
+      return :textarea if %i[text textarea].include?(as)
 
-      input_class_name = "#{camelize(sym)}Input"
-      if HexletCode::Inputs.const_defined?(input_class_name, false)
-        sym
-      else
-        :text
+      input_class_name = "#{camelize(as)}Input"
+      unless HexletCode::Inputs.const_defined?(input_class_name, false)
+        raise ArgumentError, "Unsupported input type: #{as}. Valid types: text, textarea, or defined Input classes."
       end
+
+      as
     end
 
     def extract_value(name, options)

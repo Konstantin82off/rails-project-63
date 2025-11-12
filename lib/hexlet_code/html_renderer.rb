@@ -49,11 +49,15 @@ module HexletCode
       klass.new(name, value, options)
     end
 
-    def render_submit(value)
-      return '' unless value
+    def render_submit(submit_data)
+      return '' unless submit_data
 
-      input = HexletCode::Inputs::SubmitInput.new('submit', value, {})
-      input.render
+      value = submit_data[:value]
+      options = submit_data[:options] || {}
+
+      button_attrs = { type: 'submit' }.merge(options)
+
+      HexletCode::Inputs::SubmitInput.new('submit', value, button_attrs).render
     end
 
     def humanize_name(name)
