@@ -3,7 +3,7 @@
 
 module HexletCode
   module Inputs
-    # Рендерит кнопку отправки формы (<button type="submit">).
+    # Рендерит кнопку отправки формы (<input type="submit">)
     class SubmitInput < BaseInput
       def initialize(name:, value:, options: {})
         super
@@ -11,11 +11,14 @@ module HexletCode
 
       def render
         options = tag_options.reject { |k| k == :name }
-        options.merge!(type: 'submit')
+        options.delete(:type)
 
-        Tag.build('button', options) do
-          @value.to_s
-        end
+        input_attrs = {
+          type: 'submit',
+          value: @value.to_s
+        }.merge(options)
+
+        Tag.build('input', input_attrs)
       end
     end
   end

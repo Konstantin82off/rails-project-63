@@ -65,23 +65,25 @@ module ExpectedOutputs
     </form>
   HTML
 
+  # ИЗМЕНЕНО: <button> → <input type="submit">
   FORM_WITH_LABELS_AND_SUBMIT = <<~HTML.strip
     <form action="/users" method="post">
       <label for="name">Name</label>
       <input name="name" value="rob" type="text">
       <label for="job">Job</label>
       <input name="job" value="hexlet" type="text">
-      <button type="submit">Save</button>
+      <input type="submit" value="Save">
     </form>
   HTML
 
+  # ИЗМЕНЕНО: <button> → <input type="submit">
   FORM_WITH_CUSTOM_SUBMIT = <<~HTML.strip
     <form action="/users" method="post">
       <label for="name">Name</label>
       <input name="name" value="rob" type="text">
       <label for="job">Job</label>
       <input name="job" value="hexlet" type="text">
-      <button type="submit">Update</button>
+      <input type="submit" value="Update">
     </form>
   HTML
 
