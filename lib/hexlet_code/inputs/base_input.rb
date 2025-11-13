@@ -29,9 +29,7 @@ module HexletCode
       protected
 
       def input_options
-        { name: @name }.tap do |opts|
-          opts[:id] = @options[:id] if @options.key?(:id)
-        end
+        { name: @name }.merge(@options.slice(:id))
       end
 
       def tag_options
