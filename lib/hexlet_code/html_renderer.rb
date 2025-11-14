@@ -24,52 +24,34 @@ module HexletCode
 
     def render_field(field)
       input = create_input(field)
-      input_html = input.render
-
-      if field[:options][:skip_label]
-        input_html
-      else
-        label_text = field[:options][:label] || humanize_name(field[:name])
-        label_attrs = { for: field[:name].to_s }
-        label_html = Tag.build('label', label_attrs) { label_text }
-
-        "#{label_html}\n#{input_html}"
-      end
+      input.render_with_label
     end
 
     def create_input(field)
       type = field[:type]
-      name = field[:name]
-      value = field.fetch(:value, '').to_s
-
-      options = (field[:options] || {}).except(:as)
-
       klass_name = "#{type.capitalize}Input"
       klass = HexletCode::Inputs.const_get(klass_name)
-      klass.new(name, value, options)
+      klass.new(**field.except(:type))
     end
 
-    def render_submit(value)
-      return '' unless value
+    def render_submit(submit_data)
+      return '' unless submit_data
 
-      input = HexletCode::Inputs::SubmitInput.new('submit', value, {})
-      input.render
-    end
+      value = submit_data[:value]
+      options = submit_data[:options] || {}
 
-    def humanize_name(name)
-      name.to_s.tr('_', ' ').split.map(&:capitalize).join(' ')
+      button_attrs = { type: 'submit' }.merge(options)
+      HexletCode::Inputs::SubmitInput.new(
+        name: 'submit',
+        value: value || '',
+        options: button_attrs
+      ).render
     end
 
     def normalize_form_attrs(attrs)
-      defaults = { action: '#', method: 'post' }
-      result = defaults.merge(attrs)
-
-      if result.key?(:url)
-        result[:action] = result[:url]
-        result.delete(:url)
-      end
-
-      result
+      action = attrs.fetch(:url, '#')
+      defaults = { action: action, method: 'post' }
+      defaults.merge(attrs).except(:url)
     end
   end
 end

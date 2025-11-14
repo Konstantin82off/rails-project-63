@@ -7,7 +7,7 @@
 
 HexletCode is a Ruby library for declarative HTML form generation. It builds forms bound to your Ruby objects, auto-fills values, and supports passing arbitrary HTML attributes.
 
-**Key Features (v0.3.0):**
+**Key Features (v0.3.1):**
 - Object binding with automatic value population
 - Label control: `skip_label: true` to suppress labels
 - Field types: text, textarea, checkbox, select, password, submit
@@ -17,6 +17,8 @@ HexletCode is a Ruby library for declarative HTML form generation. It builds for
 - Clean separation of form state and rendering logic
 - Support for custom submit button attributes
 - Flexible option handling with proper filtering of internal keys
+- Enhanced type safety via RBS signatures
+- Improved HTML attribute processing (correct handling of `true`/`false` values)
 
 ## Requirements
 
@@ -84,7 +86,9 @@ f.input :gender, as: :select, choices: %w[m f]
 f.input :password, as: :password
 
 # Submit button
-f.submit 'Submit'
+f.submit                      # default text: "Save"
+f.submit 'Submit'              # custom text
+f.submit 'Send', class: 'btn' # with HTML attributes
 ```
 
 ### Skip Label
@@ -94,10 +98,14 @@ f.input :terms, as: :checkbox, skip_label: true  # No <label> rendered
 
 ### Custom Submit Button Attributes
 ```ruby
-f.submit                                    # default "Save" button
-f.submit 'Wow'                              # custom button text
-f.submit 'Save', class: 'btn btn-primary' # with additional attributes
+f.submit                     # default "Save" button
+f.submit 'Wow'              # custom button text
+f.submit 'Save', class: 'btn btn-primary'  # with additional attributes
 ```
+> **Note:**
+> - The `value` parameter in `f.submit` sets the `value` attribute of the `<input type="submit">` element (e.g., `f.submit 'Send'` → `<input type="submit" value="Send">`).
+> - This follows standard HTML form behavior for submit buttons.
+> - You can pass any HTML attribute (like `class`, `id`, etc.) to customize the button.
 
 ### Example HTML Output
 ```html
@@ -110,7 +118,7 @@ f.submit 'Save', class: 'btn btn-primary' # with additional attributes
 </form>
 ```
 
-## Architecture (v0.2.0 Changes)
+## Architecture (v0.2.0+ Changes)
 
 ### Key Concepts
 
@@ -123,19 +131,20 @@ Converts form state into HTML markup. Handles all rendering logic.
 **3. HexletCode::Inputs Module**
 Manages input types via dedicated classes:
 
-- `HexletCode::Inputs::BaseInput (abstract base)`
-- `HexletCode::Inputs::TextInput`
-- `HexletCode::Inputs::CheckboxInput`
-- `HexletCode::Inputs::PasswordInput`
-- `HexletCode::Inputs::SelectInput`
-- `HexletCode::Inputs::TextareaInput`
-- `HexletCode::Inputs::SubmitInput`
+ - `HexletCode::Inputs::BaseInput (abstract base)`
+ - `HexletCode::Inputs::TextInput`
+ - `HexletCode::Inputs::CheckboxInput`
+ - `HexletCode::Inputs::PasswordInput`
+ - `HexletCode::Inputs::SelectInput`
+ - `HexletCode::Inputs::TextareaInput`
+ - `HexletCode::Inputs::SubmitInput`
 
 ### Important Notes (Breaking Changes)
 
-- **Input Namespace:** Use `HexletCode::Inputs::\[InputType\]` to access input classes.
-- **HTML Generation:** Now handled by `HtmlRenderer`, not `FormBuilder`.
-- **Autoloading:** Core components use `autoload` instead of `require_relative`.
+ - **Input Namespace:** Use `HexletCode::Inputs::[InputType]` to access input classes.
+ - **HTML Generation:** Now handled by `HtmlRenderer`, not `FormBuilder`.
+ - **Autoloading:** Core components use `autoload` instead of `require_relative`.
+ - **RBS Signatures:** Updated for better type tooling (see `sig/hexlet_code.rbs`).
 
 ## Development
 ```bash
@@ -161,6 +170,7 @@ bundle exec rubocop
 ```bash
 bundle exec rake install
 ```
+
 ### For releasing:
 1. Bump version in `lib/hexlet_code/version.rb`
 2. Run:
@@ -168,9 +178,29 @@ bundle exec rake install
 bundle exec rake release
 ```
 
+## Testing
+Tests are organized as follows:
+
+ - `test/fixtures/expected_outputs.rb`
+Contains predefined HTML snippets used as expected results in assertions.
+ - `test/test_helper.rb`
+Centralized test helpers (e.g., normalize_html) and setup for all test cases.
+ - `test/test_hexlet_code.rb`
+Main test suite covering core functionality.
+ - `test/test_form_for_empty.rb`
+Tests edge cases with empty forms or minimal input.
+ - `test/test_cases/`
+Modular test groups:
+   - `basic_tests.rb` — fundamental form building and rendering
+   - `input_type_tests.rb` — individual input classes (TextInput, CheckboxInput, etc.)
+   - `advanced_tests.rb` — complex scenarios (nested forms, custom attributes)
+   - `edge_case_tests.rb` — boundary conditions and error handling
+
+All test classes automatically include `TestHelpers` from `test/test_helper.rb`.
+
 ### Contributing
 1. Create a feature branch:
-```ash
+```bash
 git checkout -b feat/something
 ```
 2. Commit your changes:

@@ -23,7 +23,7 @@ module ExpectedOutputs
   FORM_WITH_CHECKBOX_INPUT = <<~HTML.strip
     <form action="/users" method="post">
       <label for="gender">Gender</label>
-      <input name="gender" type="checkbox" value="m" checked>
+      <input name="gender" type="checkbox" checked="checked">
     </form>
   HTML
 
@@ -82,6 +82,27 @@ module ExpectedOutputs
       <label for="job">Job</label>
       <input name="job" value="hexlet" type="text">
       <input type="submit" value="Update">
+    </form>
+  HTML
+
+  FORM_WITH_CHECKBOX_FALSE = <<~HTML.strip
+    <form action="/users" method="post">
+      <label for="accepted">Accepted</label>
+      <input name="accepted" type="checkbox">
+    </form>
+  HTML
+
+  FORM_WITH_PASSWORD_INPUT = <<~HTML.strip
+    <form action="/users" method="post">
+      <label for="password">Password</label>
+      <input name="password" type="password" value="secret123">
+    </form>
+  HTML
+
+  FORM_WITH_PASSWORD_CUSTOM = <<~HTML.strip
+    <form action="/users" method="post">
+      <label for="password">Password</label>
+      <input name="password" type="password" class="form-control" placeholder="Enter password" value="secret123">
     </form>
   HTML
 end

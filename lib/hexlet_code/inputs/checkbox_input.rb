@@ -5,13 +5,17 @@ module HexletCode
   module Inputs
     # Рендерит чекбокс (<input type="checkbox">).
     class CheckboxInput < BaseInput
+      def initialize(name:, value:, options: {})
+        super
+      end
+
       def render
         attrs = {
           name: @name.to_s,
-          type: 'checkbox',
-          value: @value || 'true'
+          type: 'checkbox'
         }.merge(@options)
 
+        attrs[:value] = @options[:value] if @options.key?(:value)
         attrs[:checked] = 'checked' if checked?
 
         Tag.build('input', attrs)
@@ -20,9 +24,7 @@ module HexletCode
       private
 
       def checked?
-        [@value, @options[:value]].include?(true) ||
-          [@value, @options[:value]].include?('true') ||
-          [@value, @options[:value]].include?('1')
+        @value == true || @value == 'true' || @value == '1'
       end
     end
   end

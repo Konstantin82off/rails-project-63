@@ -4,6 +4,33 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## 0.3.1 — 2025-11-14
+
+### Fixed
+- **Checkbox rendering**: Ensured `checked="checked"` attribute is used for HTML5 compliance (previously `checked` without value).
+- **Tag attribute processing**: Improved `Tag.attr_to_s` to handle `true`/`false` values correctly:
+  - `true` → `#{key}` (e.g., `required`).
+  - `false` → omits attribute entirely.
+- **SubmitInput initialization**: Corrected `name` parameter type from `Symbol` to `"submit"` (literal string) to reflect actual usage.
+- **RBS signatures**: Updated `sig/hexlet_code.rbs` for:
+  - `Tag` methods (`build`, `build_attributes`, `attr_to_s`, `escape_attr_value`).
+  - `BaseInput#render_with_label` (now returns `String | nil`).
+  - `CheckboxInput#initialize` (clarified `value` as `Boolean | String`).
+
+### Changed
+- **Versioning**: Bumped to `0.3.1` to reflect minor fixes and signature updates.
+- **Documentation**: Added detailed `@param`/`@return` comments in `sig/hexlet_code.rbs` for better tooling support.
+- **HTML escaping**: Strengthened `Tag.escape_attr_value` to handle special characters (`"`, `<`, `>`) in attribute values.
+- **Test organization**: Split tests into separate modules (`basic_tests`, `input_type_tests`, `tag_tests`, etc.) for better maintainability. Each module now focuses on a specific component:
+  - `basic_tests/` — core functionality (FormBuilder, Version).
+  - `input_type_tests/` — individual input classes (TextInput, CheckboxInput, etc.).
+  - `tag_tests/` — Tag class and attribute processing.
+  - `integration_tests/` — end‑to‑end form rendering.
+
+### Added
+- **VOID_TAGS constant**: Documented in `Tag` class to clarify self‑closing HTML tags.
+- **Type safety**: Enhanced RBS signatures for `Inputs` module classes (`TextInput`, `TextareaInput`, etc.) with precise parameter types.
+
 ## 0.3.0 — 2025-11-08
 
 ### Added
@@ -17,13 +44,11 @@ All notable changes to this project will be documented in this file.
 - **Select input**: Restored proper `<option>` rendering with `selected` attribute.
 - **Textarea attributes**: Fixed custom `cols`/`rows` handling.
 
-
 ### Changed
 - **Input constructors**: All inputs now accept `name: Symbol`, `value: String?`, `options: Hash`.
 - **HtmlRenderer**: Simplified `create_input` logic — now passes only relevant options.
 - **FormBuilder**: Removed redundant state management (no `FormState` class).
 - **Tests**: Stabilized all test cases (14 runs, 14 assertions, 0 failures).
-
 
 ### Removed
 - **Redundant methods**: Eliminated duplicate attribute merging logic.
@@ -45,6 +70,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - **Unified rendering**: `<textarea>` now uses the same helper as `<input>` for consistent form generation.
+- **Test organization**: Began splitting tests into logical groups (e.g., `form_builder_tests/`, `textarea_tests/`).
 
 ## 0.2.0 — 2025-10-28
 
@@ -67,6 +93,7 @@ All notable changes to this project will be documented in this file.
   - Introduced separation between model (`FormState`) and renderer (`HtmlRenderer`).
   - Moved form field collection to `FormBuilder`.
   - Fixed dependency loading via `require_relative`.
+- **Test organization**: Introduced initial test modules (`core_tests/`, `inputs_tests/`) to reduce file clutter.
 
 ### Fixed
 - **HTML output**: Removed extra leading space in form attributes (e.g., `<form  action=...>` → `<form action=...>`).
@@ -96,7 +123,6 @@ All notable changes to this project will be documented in this file.
   - Added `normalize_html` utility method.
   - Extended `Minitest::Test` to automatically include `TestHelpers`.
 
-
 ### Removed
 - **Obsolete code**:
   - Comments (e.g., `# default` markers).
@@ -111,7 +137,6 @@ All notable changes to this project will be documented in this file.
   - Centralized test helpers in `test/test_helper.rb`.
   - Automated inclusion of `TestHelpers` in all test classes.
 - **Code cleanup**: Removed redundant code and streamlined logic across modules.
-
 
 ## 0.1.0 — 2025-10-08
 

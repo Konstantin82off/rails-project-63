@@ -5,14 +5,18 @@ module HexletCode
   module Inputs
     # Рендерит поле для ввода пароля (<input type="password">).
     class PasswordInput < BaseInput
-      def render
-        default_options = { type: 'password' }
-        attrs = { name: @name.to_s, value: @value }
-                .merge(default_options)
-                .merge(@options)
+      # Сохраняем инициализатор
+      def initialize(name:, value:, options: {})
+        super
+      end
 
-        attr_string = build_attributes(attrs)
-        "<input #{attr_string}>"
+      def render
+        attrs = tag_options.merge(
+          type: 'password',
+          value: @value
+        )
+
+        Tag.build('input', attrs)
       end
     end
   end

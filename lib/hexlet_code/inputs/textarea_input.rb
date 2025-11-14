@@ -5,6 +5,10 @@ module HexletCode
   module Inputs
     # Рендерит многострочное поле ввода (<textarea>).
     class TextareaInput < BaseInput
+      def initialize(name:, value:, options: {})
+        super
+      end
+
       def render
         default_options = { cols: 20, rows: 40 }
 
