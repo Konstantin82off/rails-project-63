@@ -23,7 +23,7 @@ module ExpectedOutputs
   FORM_WITH_CHECKBOX_INPUT = <<~HTML.strip
     <form action="/users" method="post">
       <label for="gender">Gender</label>
-      <input name="gender" type="checkbox" checked>
+      <input name="gender" type="checkbox" checked="checked">
     </form>
   HTML
 
@@ -65,7 +65,6 @@ module ExpectedOutputs
     </form>
   HTML
 
-  # ИЗМЕНЕНО: <button> → <input type="submit">
   FORM_WITH_LABELS_AND_SUBMIT = <<~HTML.strip
     <form action="/users" method="post">
       <label for="name">Name</label>
@@ -76,7 +75,6 @@ module ExpectedOutputs
     </form>
   HTML
 
-  # ИЗМЕНЕНО: <button> → <input type="submit">
   FORM_WITH_CUSTOM_SUBMIT = <<~HTML.strip
     <form action="/users" method="post">
       <label for="name">Name</label>

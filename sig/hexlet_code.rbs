@@ -5,28 +5,31 @@ module HexletCode
   # Основной класс для построения форм
   class FormBuilder
     # Конструктор FormBuilder
-    # entity - объект, к которому привязывается форма
+    # @param entity [untyped] объект, к которому привязывается форма
     def initialize(entity: untyped): void
 
+
     # Основной метод для создания полей ввода
-    # name - имя поля (Symbol)
-    # options - дополнительные опции (Hash)
-    #   as: - тип поля (Symbol, optional)
-    #   value: - значение по умолчанию (String?, optional)
-    #   class: - CSS класс (String?, optional)
-    #   placeholder: - текст-заполнитель (String?, optional)
-    #   skip_label: - не создавать лейбл (Boolean?, optional)
-    #   label: - текст лейбла (String?, optional)
+    # @param name [Symbol] имя поля
+    # @param options [untyped] дополнительные опции:
+    #   - as: [Symbol, optional] тип поля
+    #   - value: [String | nil, optional] значение по умолчанию
+    #   - class: [String | nil, optional] CSS‑класс
+    #   - placeholder: [String | nil, optional] текст‑заполнитель
+    #   - skip_label: [Boolean | nil, optional] не создавать лейбл
+    #   - label: [String | nil, optional] текст лейбла
     def input(name: Symbol, **options: untyped): self
 
 
     # Метод создания кнопки отправки формы
-    # value - текст на кнопке (String, default: "Save")
-    # options - дополнительные HTML-атрибуты кнопки (Hash, optional)
+    # @param value [String] текст на кнопке (по умолчанию "Save")
+    # @param options [untyped] дополнительные HTML‑атрибуты кнопки
+    # @return [self]
     def submit(value: String = "Save", **options: untyped): self
 
 
     # Преобразование формы в строку HTML
+    # @return [String] HTML‑код формы
     def to_s(): String
 
     # Атрибут с собранными полями формы
@@ -40,69 +43,166 @@ module HexletCode
     private
 
     # Создание текстового поля
+    # @param name [Symbol] имя поля
+    # @param value [String] значение поля
+    # @param options [Hash] дополнительные опции
     def add_textarea(name: Symbol, value: String, options: Hash): void
+
+
     # Создание выпадающего списка
+    # @param name [Symbol] имя поля
+    # @param value [String] выбранное значение
+    # @param options [Hash] дополнительные опции
     def add_select(name: Symbol, value: String, options: Hash): void
+
     # Создание чекбокса
+    # @param name [Symbol] имя поля
+    # @param value [String] значение поля
+    # @param options [Hash] дополнительные опции
     def add_checkbox(name: Symbol, value: String, options: Hash): void
+
+
     # Создание поля пароля
+    # @param name [Symbol] имя поля
+    # @param value [String] значение поля
+    # @param options [Hash] дополнительные опции
     def add_password(name: Symbol, value: String, options: Hash): void
+
+
     # Создание обычного текстового поля
+    # @param name [Symbol] имя поля
+    # @param value [String] значение поля
+    # @param options [Hash] дополнительные опции
     def add_text_input(name: Symbol, value: String, options: Hash): void
+
+
     # Создание тега label
+    # @param name [Symbol] имя поля для привязки лейбла
+    # @return [String] HTML‑код лейбла
     def label(name: Symbol): String
+
+
     # Создание кнопки отправки формы
+    # @param value [String] текст на кнопке
+    # @param options [Hash] дополнительные HTML‑атрибуты
     def add_submit(value: String, options: Hash): void
   end
 
-  # Вспомогательный класс для построения HTML-тегов
+  # Вспомогательный класс для построения HTML‑тегов
   class Tag
+    # Список самозакрывающихся HTML‑тегов (не требуют закрывающего тега)
+    VOID_TAGS: Array[Symbol]
+
+
+    # Создаёт HTML‑тег с атрибутами и содержимым
+    # @param tag_name [String] имя тега (например, "div" или "input")
+    # @param attrs [Hash] хеш атрибутов тега
+    # @yieldreturn [String] содержимое тега (если тег не самозакрывающийся)
+    # @return [String] сгенерированный HTML
     def self.build(tag_name: String, attrs: Hash, &block: -> String): String
+
+
+    # Преобразует хеш атрибутов в строку HTML‑атрибутов (например, ' class="btn"')
+    # @param attrs [Hash] хеш атрибутов
+    # @return [String] строка атрибутов
     def self.build_attributes(attrs: Hash): String
   end
 
+
+  # Пространство имён для классов input‑компонентов
   module Inputs
-    # Базовый класс для всех input-компонентов.
+    # Базовый класс для всех input‑компонентов
     class BaseInput
-      def initialize(name: Symbol, value: String?, options: Hash): void
+      # Конструктор базового input‑компонента
+      # @param name [Symbol] имя поля
+      # @param value [String | nil] значение поля
+      # @param options [Hash] дополнительные опции
+      def initialize(name: Symbol, value: String | nil, options: Hash): void
+
+
+      # Рендерит HTML‑код поля ввода
+      # @return [String] HTML‑код поля
       def render(): String
     end
 
-    # Рендерит чекбокс (<input type="checkbox">).
+    # Рендерит чекбокс (<input type="checkbox">)
     class CheckboxInput < BaseInput
-      def initialize(name: Symbol, value: String?, options: Hash): void
+      # Конструктор чекбокса
+      # @param name [Symbol] имя поля
+      # @param value [String | nil] значение поля (может быть "true"/"false" или nil)
+      # @param options [Hash] дополнительные опции
+      def initialize(name: Symbol, value: String | nil, options: Hash): void
+
+
+      # Рендерит HTML‑код чекбокса
+      # @return [String] HTML‑код чекбокса
       def render(): String
     end
 
-    # Рендерит выпадающий список (<select>).
+    # Рендерит выпадающий список (<select>)
     class SelectInput < BaseInput
-      def initialize(name: Symbol, value: String?, options: Hash): void
+      # Конструктор выпадающего списка
+      # @param name [Symbol] имя поля
+      # @param value [String | nil] выбранное значение
+      # @param options [Hash] дополнительные опции (включая :choices)
+      def initialize(name: Symbol, value: String | nil, options: Hash): void
+
+      # Рендерит HTML‑код выпадающего списка
+      # @return [String] HTML‑код <select>
       def render(): String
     end
 
-    # Рендерит текстовое поле формы (<input type="text">).
+    # Рендерит текстовое поле формы (<input type="text">)
     class TextInput < BaseInput
-      def initialize(name: Symbol, value: String?, options: Hash): void
+      # Конструктор текстового поля
+      # @param name [Symbol] имя поля
+      # @param value [String | nil] значение поля
+      # @param options [Hash] дополнительные опции
+      def initialize(name: Symbol, value: String | nil, options: Hash): void
+
+      # Рендерит HTML‑код текстового поля
+      # @return [String] HTML‑код <input type="text">
       def render(): String
     end
 
-    # Рендерит многострочное поле ввода (<textarea>).
+    # Рендерит многострочное поле ввода (<textarea>)
     class TextareaInput < BaseInput
-      def initialize(name: Symbol, value: String?, options: Hash): void
+      # Конструктор многострочного поля
+      # @param name [Symbol] имя поля
+      # @param value [String | nil] содержимое поля
+      # @param options [Hash] дополнительные опции (cols, rows и др.)
+      def initialize(name: Symbol, value: String | nil, options: Hash): void
+
+      # Рендерит HTML‑код многострочного поля
+      # @return [String] HTML‑код <textarea>
       def render(): String
     end
 
-    # Рендерит поле для ввода пароля (<input type="password">).
+    # Рендерит поле для ввода пароля (<input type="password">)
     class PasswordInput < BaseInput
-      def initialize(name: Symbol, value: String?, options: Hash): void
+      # Конструктор поля пароля
+      # @param name [Symbol] имя поля
+      # @param value [String | nil] значение поля
+      # @param options [Hash] дополнительные опции
+      def initialize(name: Symbol, value: String | nil, options: Hash): void
+
+      # Рендерит HTML‑код поля пароля
+      # @return [String] HTML‑код <input type="password">
       def render(): String
     end
 
-    # Рендерит кнопку отправки формы (<button type="submit">).
-    # value используется только как текст внутри кнопки (не передаётся в атрибут value HTML).
-    # name игнорируется для submit, используется только value (текст кнопки).
+    # Рендерит кнопку отправки формы (<button type="submit">)
+    # value используется только как текст внутри кнопки (не передаётся в атрибут value HTML)
+    # name игнорируется для submit, используется только value (текст кнопки)
     class SubmitInput < BaseInput
-      def initialize(name: Symbol, value: String?, options: Hash): void
+      # Конструктор кнопки отправки
+      # @param name [Symbol] имя поля (обычно :submit)
+      # @param value [String | nil] текст на кнопке
+      # @param options [Hash] дополнительные HTML‑атрибуты
+      def initialize(name: Symbol, value: String | nil, options: Hash): void
+
+      # Рендерит HTML‑код кнопки отправки
+      # @return [String] HTML‑код <button type="submit">
       def render(): String
     end
   end
