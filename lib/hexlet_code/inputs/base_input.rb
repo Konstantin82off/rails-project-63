@@ -29,7 +29,7 @@ module HexletCode
       protected
 
       def input_options
-        { name: @name }.merge(@options.slice(:id))
+        { name: @name }.merge(@options)
       end
 
       def tag_options
