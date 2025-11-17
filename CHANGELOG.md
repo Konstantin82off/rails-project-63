@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## 0.3.1 — 2025-11-17
+
+### Changed
+- Removed redundant `initialize` methods from all input classes (`CheckboxInput`, `SubmitInput`, `PasswordInput`, `SelectInput`, `TextInput`, `TextareaInput`) — classes now inherit constructor from `BaseInput` (adheres to DRY principle).
+- Optimized option filtering in `SubmitInput#render`: combined exclusion of `:name` and `:type` keys into a single `reject` call for better performance and readability.
+
 ## 0.3.1 — 2025-11-14
 
 ### Fixed
